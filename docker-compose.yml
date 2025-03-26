@@ -1,0 +1,51 @@
+version: '3'
+volumes:
+    dbvolume:
+        name: ${DB_VOLUME}
+        external: true
+networks:
+    db:
+    app:
+services:
+    db:
+        image: mysql:8.0
+        command: ["--default-authentication-plugin=mysql_native_password"]
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: ${DB_NAME}
+            MYSQL_USER: ${DB_USER}
+            MYSQL_PASSWORD: ${DB_PASS}
+        volumes:
+            - dbvolume:/var/lib/mysql
+            - ./db:/docker-entrypoint-initdb.d
+        networks:
+            - db
+            - app
+    dbadmin:
+        image: phpmyadmin
+        environment:
+            PMA_HOST: db
+            PMA_PORT: 3306
+            PMA_USER: ${DB_USER}
+            PMA_PASSWORD: ${DB_PASS}
+        networks:
+            - db
+        ports:
+            - "${DBADMIN_PORT}:80"
+    composer:
+        image: composer
+        volumes:
+            - ./slim:/app
+        command: bash -c "([ ! -f composer.json ] && composer require slim/slim:'4.*' slim/psr7) || ([ ! -d vendor ] && composer install -no) || exit 0"
+    slim:
+        build: ./docker/slim
+        image: ${COMPOSE_PROJECT_NAME}_slim
+        volumes:
+            - ./slim:/var/www/html
+        networks:
+            - app
+        ports:
+            - "${SLIM_PORT}:80"
+        depends_on:
+            composer:
+                condition: service_completed_successfully

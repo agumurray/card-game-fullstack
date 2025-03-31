@@ -21,10 +21,25 @@ $app->add( function ($request, $handler) {
     ;
 });
 
-// ACÁ VAN LOS ENDPOINTS
-$app->get('/hello/{name}', function (Request $request, Response $response, array $args) {
-    $name = $args['name'];
-    $response->getBody()->write("Hola, $name");
+//DB CONNECTION
+//!no hacer commit de las credenciales reales de la DB
+$dsn = 'mysql:host=db;dbname=seminariophp';
+$username='seminariophp';
+$password= 'seminariophp';
+$pdo = new PDO($dsn, $username, $password);
+
+
+// Endpoint para probar la conexión con la base de datos
+$app->get('/test_db', function (Request $request, Response $response) use ($pdo) {
+    try {
+        $stmt = $pdo->query("SELECT * FROM carta");
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $response->getBody()->write(json_encode(['status' => 'success', 'data' => $result]));
+    } catch (PDOException $e) {
+        $response->getBody()->write(json_encode(['status' => 'error', 'message' => $e->getMessage()]));
+    }
+
     return $response;
 });
 

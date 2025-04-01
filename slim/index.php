@@ -1,10 +1,18 @@
 <?php
+require __DIR__ . '/vendor/autoload.php';
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+//use Dotenv\Dotenv;
 
-require __DIR__ . '/vendor/autoload.php';
+
+
+//$dotenv = Dotenv::createImmutable(__DIR__ );
+//$dotenv->load();
+
 
 $app = AppFactory::create();
 $app->addBodyParsingMiddleware();
@@ -21,26 +29,56 @@ $app->add( function ($request, $handler) {
     ;
 });
 
+
 //DB CONNECTION
-//!no hacer commit de las credenciales reales de la DB
-$dsn = 'mysql:host=db;dbname=seminariophp';
-$username='seminariophp';
-$password= 'seminariophp';
+$dsn = 'mysql:host=db;dbname=' . getenv('DB_NAME');
+$username = getenv('DB_USER');
+$password = getenv('DB_PASS');
 $pdo = new PDO($dsn, $username, $password);
 
 
-// Endpoint para probar la conexión con la base de datos
-$app->get('/test_db', function (Request $request, Response $response) use ($pdo) {
-    try {
-        $stmt = $pdo->query("SELECT * FROM carta");
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//JWT secret key
+$secretKey = getenv('JWT_SECRET');
 
-        $response->getBody()->write(json_encode(['status' => 'success', 'data' => $result]));
-    } catch (PDOException $e) {
-        $response->getBody()->write(json_encode(['status' => 'error', 'message' => $e->getMessage()]));
+//login
+$app->post('/login', function (Request $request, Response $response) use ($pdo, $secretKey) {
+    $data = $request->getParsedBody();
+    $usuario = $data['usuario'] ?? '';
+    $clave = $data['clave'] ?? '';
+
+    if (empty($usuario) || empty($clave)) {
+        $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Usuario y clave requeridos']));
+        return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
     }
 
-    return $response;
+    $stmt = $pdo->prepare("SELECT id, nombre, usuario, password FROM usuario WHERE usuario = :usuario");
+    $stmt->execute(['usuario' => $usuario]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user || !password_verify($clave, $user['password'])) {
+        $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Credenciales inválidas']));
+        return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
+    }
+
+    $exp = time() + 3600;
+    $payload = [
+        'sub' => $user['id'],
+        'name' => $user['nombre'],
+        'iat' => time(),
+        'exp' => $exp
+    ];
+    $token = JWT::encode($payload, $secretKey, 'HS256');
+
+    $stmt = $pdo->prepare("UPDATE usuario SET token = :token, vencimiento_token = FROM_UNIXTIME(:exp) WHERE id = :id");
+    $stmt->execute(['token' => $token, 'exp' => $exp, 'id' => $user['id']]);
+
+    $response->getBody()->write(json_encode([
+        'status' => 'success',
+        'token' => $token,
+        'nombre' => $user['nombre']
+    ]));
+
+    return $response->withHeader('Content-Type', 'application/json');
 });
 
 

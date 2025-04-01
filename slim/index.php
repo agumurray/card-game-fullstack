@@ -43,11 +43,12 @@ $secretKey = getenv('JWT_SECRET');
 //login
 $app->post('/login', function (Request $request, Response $response) use ($pdo, $secretKey) {
     $data = $request->getParsedBody();
+    $nombre = $data['nombre'] ?? '';
     $usuario = $data['usuario'] ?? '';
     $clave = $data['clave'] ?? '';
 
-    if (empty($usuario) || empty($clave)) {
-        $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Usuario y clave requeridos']));
+    if (empty($nombre) || empty($usuario) || empty($clave)) {
+        $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Nombre, usuario y clave requeridos']));
         return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
     }
 
@@ -75,12 +76,9 @@ $app->post('/login', function (Request $request, Response $response) use ($pdo, 
     $response->getBody()->write(json_encode([
         'status' => 'success',
         'token' => $token,
-        'nombre' => $user['nombre']
     ]));
 
     return $response->withHeader('Content-Type', 'application/json');
 });
-
-
 
 $app->run();

@@ -78,7 +78,7 @@ $app->post('/login', function (Request $request, Response $response) use ($pdo, 
         'token' => $token,
     ]));
 
-    return $response->withHeader('Content-Type', 'application/json');
+    return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
 });
 
 $app->run();

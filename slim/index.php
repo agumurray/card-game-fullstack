@@ -30,47 +30,53 @@ $secretKey = getenv('JWT_SECRET');
 
 //login
 $app->post('/login', function (Request $request, Response $response) use ($secretKey) {
-    $db = DB::getConnection();
+    try{
+        $db = DB::getConnection();
 
-    $data = $request->getParsedBody();
-    $nombre = $data['nombre'] ?? '';
-    $usuario = $data['usuario'] ?? '';
-    $clave = $data['clave'] ?? '';
-
-    if (empty($nombre) || empty($usuario) || empty($clave)) {
-        $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Nombre, usuario y clave requeridos']));
-        return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+        $data = $request->getParsedBody();
+        $nombre = $data['nombre'] ?? '';
+        $usuario = $data['usuario'] ?? '';
+        $clave = $data['clave'] ?? '';
+    
+        if (empty($nombre) || empty($usuario) || empty($clave)) {
+            $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Nombre, usuario y clave requeridos']));
+            return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+        }
+    
+        $stmt = $db->prepare("SELECT id, nombre, usuario, password FROM usuario WHERE usuario = :usuario");
+        $stmt->execute(['usuario' => $usuario]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$user || !password_verify($clave, $user['password'])) {
+            $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Credenciales inválidas']));
+            return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
+        }
+    
+        $exp = time() + 3600;
+        $payload = [
+            'sub' => $user['id'],
+            'name' => $user['nombre'],
+            'iat' => time(),
+            'exp' => $exp
+        ];
+        $token = JWT::encode($payload, $secretKey, 'HS256');
+    
+        $token = substr($token, 0, 128);
+    
+        $stmt = $db->prepare("UPDATE usuario SET token = :token, vencimiento_token = FROM_UNIXTIME(:exp) WHERE id = :id");
+        $stmt->execute(['token' => $token, 'exp' => $exp, 'id' => $user['id']]);
+    
+        $response->getBody()->write(json_encode([
+            'status' => 'success',
+            'token' => $token,
+        ]));
+    
+        return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+    } 
+    catch (PDOE) {
+        $response = $response->withStatus(404);
+        $response->getBody()->write(json_encode(['error' => 'User not found or no changes made']));
     }
-
-    $stmt = $db->prepare("SELECT id, nombre, usuario, password FROM usuario WHERE usuario = :usuario");
-    $stmt->execute(['usuario' => $usuario]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$user || !password_verify($clave, $user['password'])) {
-        $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'Credenciales inválidas']));
-        return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
-    }
-
-    $exp = time() + 3600;
-    $payload = [
-        'sub' => $user['id'],
-        'name' => $user['nombre'],
-        'iat' => time(),
-        'exp' => $exp
-    ];
-    $token = JWT::encode($payload, $secretKey, 'HS256');
-
-    $token = substr($token, 0, 128);
-
-    $stmt = $db->prepare("UPDATE usuario SET token = :token, vencimiento_token = FROM_UNIXTIME(:exp) WHERE id = :id");
-    $stmt->execute(['token' => $token, 'exp' => $exp, 'id' => $user['id']]);
-
-    $response->getBody()->write(json_encode([
-        'status' => 'success',
-        'token' => $token,
-    ]));
-
-    return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
 });
 
 
@@ -99,5 +105,6 @@ $app->put('/usuario/{usuario}', function (Request $request, Response $response, 
     }
 
 });
+
 
 $app->run();

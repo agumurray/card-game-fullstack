@@ -81,4 +81,29 @@ $app->post('/login', function (Request $request, Response $response) use ($pdo, 
     return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
 });
 
+
+$app->put('/usuario/{usuario}', function (Request $request, Response $response, array $args) use ($pdo) {
+    $id_usuario = $args['usuario'];
+    $data = json_decode($request->getBody()->getContents(), true);
+
+
+    $nombre = $data['nombre'];
+    $contrasenia = $data['contrasenia'];
+
+
+    $stmt = $pdo->prepare("UPDATE usuario SET nombre = :nombre, password = :contrasenia WHERE id = :usuario");
+    $stmt->bindParam(':nombre', $nombre);
+    $stmt->bindParam(':contrasenia', $contrasenia);
+    $stmt->bindParam(':usuario', $id_usuario);
+
+    if ($stmt->execute()) {
+        $response->getBody()->write(json_encode(['mensaje' => 'Usuario actualizado correctamente']));
+        return $response->withHeader('Content-Type', 'application/json');
+    } else {
+        $response->getBody()->write(json_encode(['error' => 'No se pudo actualizar el usuario']));
+        return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
+    }
+
+});
+
 $app->run();

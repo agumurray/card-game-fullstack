@@ -6,12 +6,6 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-//use Dotenv\Dotenv;
-
-
-
-//$dotenv = Dotenv::createImmutable(__DIR__ );
-//$dotenv->load();
 
 
 $app = AppFactory::create();

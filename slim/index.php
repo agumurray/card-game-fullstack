@@ -1,11 +1,13 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/models/DB.php';
 
 
 $app = AppFactory::create();
@@ -23,19 +25,13 @@ $app->add( function ($request, $handler) {
     ;
 });
 
-
-//DB CONNECTION
-$dsn = 'mysql:host=db;dbname=' . getenv('DB_NAME');
-$username = getenv('DB_USER');
-$password = getenv('DB_PASS');
-$pdo = new PDO($dsn, $username, $password);
-
-
 //JWT secret key
 $secretKey = getenv('JWT_SECRET');
 
 //login
-$app->post('/login', function (Request $request, Response $response) use ($pdo, $secretKey) {
+$app->post('/login', function (Request $request, Response $response) use ($secretKey) {
+    $db = DB::getConnection();
+
     $data = $request->getParsedBody();
     $nombre = $data['nombre'] ?? '';
     $usuario = $data['usuario'] ?? '';
@@ -46,7 +42,7 @@ $app->post('/login', function (Request $request, Response $response) use ($pdo, 
         return $response->withStatus(400)->withHeader('Content-Type', 'application/json');
     }
 
-    $stmt = $pdo->prepare("SELECT id, nombre, usuario, password FROM usuario WHERE usuario = :usuario");
+    $stmt = $db->prepare("SELECT id, nombre, usuario, password FROM usuario WHERE usuario = :usuario");
     $stmt->execute(['usuario' => $usuario]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -64,7 +60,9 @@ $app->post('/login', function (Request $request, Response $response) use ($pdo, 
     ];
     $token = JWT::encode($payload, $secretKey, 'HS256');
 
-    $stmt = $pdo->prepare("UPDATE usuario SET token = :token, vencimiento_token = FROM_UNIXTIME(:exp) WHERE id = :id");
+    $token = substr($token, 0, 128);
+
+    $stmt = $db->prepare("UPDATE usuario SET token = :token, vencimiento_token = FROM_UNIXTIME(:exp) WHERE id = :id");
     $stmt->execute(['token' => $token, 'exp' => $exp, 'id' => $user['id']]);
 
     $response->getBody()->write(json_encode([
@@ -76,7 +74,9 @@ $app->post('/login', function (Request $request, Response $response) use ($pdo, 
 });
 
 
-$app->put('/usuario/{usuario}', function (Request $request, Response $response, array $args) use ($pdo) {
+$app->put('/usuario/{usuario}', function (Request $request, Response $response, array $args) {
+    $db = DB::getConnection();
+
     $id_usuario = $args['usuario'];
     $data = json_decode($request->getBody()->getContents(), true);
 
@@ -85,7 +85,7 @@ $app->put('/usuario/{usuario}', function (Request $request, Response $response, 
     $contrasenia = $data['contrasenia'];
 
 
-    $stmt = $pdo->prepare("UPDATE usuario SET nombre = :nombre, password = :contrasenia WHERE id = :usuario");
+    $stmt = $db->prepare("UPDATE usuario SET nombre = :nombre, password = :contrasenia WHERE id = :usuario");
     $stmt->bindParam(':nombre', $nombre);
     $stmt->bindParam(':contrasenia', $contrasenia);
     $stmt->bindParam(':usuario', $id_usuario);

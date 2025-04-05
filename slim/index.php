@@ -81,29 +81,42 @@ $app->post('/login', function (Request $request, Response $response) use ($secre
 
 
 $app->put('/usuario/{usuario}', function (Request $request, Response $response, array $args) {
-    $db = DB::getConnection();
+    try{
+        $db = DB::getConnection();
+        //tomo el id del url y los datos(nombre,contrasenia y token) del body
+        $id_usuario = $args['usuario'];
+        $data = json_decode($request->getBody()->getContents(), true);
 
-    $id_usuario = $args['usuario'];
-    $data = json_decode($request->getBody()->getContents(), true);
-
-
-    $nombre = $data['nombre'];
-    $contrasenia = $data['contrasenia'];
-
-
-    $stmt = $db->prepare("UPDATE usuario SET nombre = :nombre, password = :contrasenia WHERE id = :usuario");
-    $stmt->bindParam(':nombre', $nombre);
-    $stmt->bindParam(':contrasenia', $contrasenia);
-    $stmt->bindParam(':usuario', $id_usuario);
-
-    if ($stmt->execute()) {
-        $response->getBody()->write(json_encode(['mensaje' => 'Usuario actualizado correctamente']));
-        return $response->withHeader('Content-Type', 'application/json');
-    } else {
-        $response->getBody()->write(json_encode(['error' => 'No se pudo actualizar el usuario']));
-        return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
+        //les asigno variables a los datos del body
+        $nombre = $data['nombre'] ?? '';
+        $contrasenia = password_hash($data['contrasenia'] ?? '', PASSWORD_DEFAULT);
+        $token = $data['token'] ?? '';
+        //agarro el token y la fecha de vencimiento del mismo
+        $stmt = $db->prepare("SELECT token, vencimiento_token FROM usuario WHERE id= :usuario");
+        $stmt->execute(['usuario' => $id_usuario]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        //verifico que el token del body y el token del bd sean iguales y que la fecha de ahora no sea mayor a la del vencimiento
+        if ($token != $user['token'] || time()>strtotime($user['vencimiento_token'])){
+            $response->getBody()->write(json_encode(['status' => 'error', 'message' => 'token invalido o expirado']));
+                return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
+        }
+        //me preparo para modificar los campos de nombre y contrasenia y ejecuto
+        $stmt = $db->prepare("UPDATE usuario SET nombre = :nombre, password = :contrasenia WHERE id = :usuario");
+        $stmt->bindParam(':nombre', $nombre);
+        $stmt->bindParam(':contrasenia', $contrasenia);
+        $stmt->bindParam(':usuario', $id_usuario);
+        if ($stmt->execute()) {
+            $response->getBody()->write(json_encode(['mensaje' => 'Usuario actualizado correctamente']));
+            return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
+        } else {
+            $response->getBody()->write(json_encode(['error' => 'No se pudo actualizar el usuario']));
+            return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
+        }
     }
-
+    catch (PDOE) {
+        $response = $response->withStatus(404);
+        $response->getBody()->write(json_encode(['error' => 'User not found or no changes made']));
+    }
 });
 
 

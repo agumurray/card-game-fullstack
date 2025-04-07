@@ -118,7 +118,7 @@ $app->post('/login', function (Request $request, Response $response) use ($secre
     
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     } 
-    catch (PDOE) {
+    catch (PDOException $e) {
         $response = $response->withStatus(404);
         $response->getBody()->write(json_encode(['error' => 'User not found or no changes made']));
     }
@@ -158,7 +158,7 @@ $app->put('/usuario/{usuario}', function (Request $request, Response $response, 
             return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
         }
     }
-    catch (PDOE) {
+    catch (PDOException $e) {
         $response = $response->withStatus(404);
         $response->getBody()->write(json_encode(['error' => 'User not found or no changes made']));
     }

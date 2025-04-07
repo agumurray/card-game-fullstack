@@ -27,6 +27,51 @@ $app->add( function ($request, $handler) {
 
 //JWT secret key
 $secretKey = getenv('JWT_SECRET');
+//register
+$app->post('/register',function(Request $request, Response $response){
+    try {
+        $db = DB::getConnection();
+        $data = $request->getParsedBody();
+        //me fijo si todos los campos estan cubiertos
+        if (empty($data['nombre']) || empty($data['usuario']) || empty($data['clave'])) {
+            $response = $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+            $response->getBody()->write(json_encode([
+                'error' => 'Todos los campos (nombre, usuario, password) son obligatorios'
+            ]));
+            return $response;
+        }
+        // verifico q el usuario no haya sido creado
+        $stmt = $db->prepare("SELECT COUNT(*) FROM usuario WHERE usuario = :usuario");
+        $stmt->execute([':usuario' => $data['usuario']]);
+        $exists = $stmt->fetchColumn();
+        
+        if ($exists > 0) { 
+            $response = $response->withStatus(409)->withHeader('Content-Type', 'application/json');
+            $response->getBody()->write(json_encode(['error' => 'El usuario ya existe']));
+            return $response;
+        }
+        // Hashear la contraseña
+        $hashedClave = password_hash($data['clave'], PASSWORD_DEFAULT);
+        //si no fue creado, inserto el usuario
+        $stmt = $db->prepare("INSERT INTO usuario(nombre,usuario,password) VALUES (:nombre,:usuario,:password)");
+        $success = $stmt->execute([
+            ':nombre'=>$data['nombre'] ?? '',
+            ':usuario'=>$data['usuario'] ??'',
+            ':password'=>$hashedClave
+        ]);
+        
+        if ($success){
+            $response->getBody()->write(json_encode(['status'=>'usuario creado']));
+        }else {
+            $response = $response->withStatus(400);
+            $response ->getBody()->write(json_encode(['error'=>'no se pudo crear el usuario']));
+        }
+    } catch (PDOException $e) {
+        $response = $response->withStatus(500);
+        $response -> getBody()->write(json_encode(['error'=> $e->getMessage()]));
+    }
+    return $response;
+});
 
 //login
 $app->post('/login', function (Request $request, Response $response) use ($secretKey) {

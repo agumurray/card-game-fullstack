@@ -50,6 +50,23 @@ $app->post('/register',function(Request $request, Response $response){
             $response->getBody()->write(json_encode(['error' => 'El usuario ya existe']));
             return $response;
         }
+        // Valido que el usuario sea alfanumérico y tenga entre 6 y 20 caracteres
+        if (!preg_match('/^[a-zA-Z0-9]{6,20}$/', $data['usuario'])) {
+            $response = $response->withStatus(400)->withHeader('Content-Type', 'application/json');
+            $response->getBody()->write(json_encode([
+                'error' => 'El nombre de usuario debe tener entre 6 y 20 caracteres y solo contener letras y números'
+            ]));
+            return $response;
+        }
+        //me fijo que tengo la contrasena tenga al menos 8 caracteres,minuscula,numeros y al menos 8 caracteres
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $data['clave'])){
+            $response =$response->withStatus(400)->withHeader('Content-Type','application/json');
+            $response->getBody()->write(json_encode([
+                'error'=>'la contrasena debe tener al menos 8 caracteres,mayuscula,minuscula y algun caracter especial'
+            ]));
+            return $response;
+
+        }
         // Hashear la contraseña
         $hashedClave = password_hash($data['clave'], PASSWORD_DEFAULT);
         //si no fue creado, inserto el usuario
@@ -118,7 +135,7 @@ $app->post('/login', function (Request $request, Response $response) use ($secre
     
         return $response->withStatus(200)->withHeader('Content-Type', 'application/json');
     } 
-    catch (PDOE) {
+    catch (PDOException $e) {
         $response = $response->withStatus(404);
         $response->getBody()->write(json_encode(['error' => 'User not found or no changes made']));
     }
@@ -158,7 +175,7 @@ $app->put('/usuario/{usuario}', function (Request $request, Response $response, 
             return $response->withStatus(500)->withHeader('Content-Type', 'application/json');
         }
     }
-    catch (PDOE) {
+    catch (PDOException $e) {
         $response = $response->withStatus(404);
         $response->getBody()->write(json_encode(['error' => 'User not found or no changes made']));
     }

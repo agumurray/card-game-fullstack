@@ -1,36 +1,56 @@
-Seminario de PHP, React, y API Rest
-===================================
+# Card Game PHP API
 
-## Configuración inicial
+A RESTful API for an online card game built with PHP, Slim Framework, and Docker.
 
-1. Crear archivo `.env` a partir de `.env.dist`
+## Prerequisites
+
+Make sure you have the following installed and configured on your system:
+
+1. Docker  
+2. Composer  
+3. PHP with the `zip` extension enabled in `php.ini`
+
+---
+
+## First-Time Setup
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/agumurray/card-game-php.git
+   cd card-game-php
+   ```
+
+2. Copy the example environment file:
+
+   ```bash
+   cp .env.dist .env
+   ```
+
+3. Install dependencies:
+
+   ```bash
+   composer install
+   ```
+
+---
+
+## Usage
+
+### Start the application:
 
 ```bash
-cp .env.dist .env
+docker-compose up -d
 ```
 
-2. Crear volumen para la base de datos
+### Stop the application (preserve database data):
 
 ```bash
-docker volume create seminariophp
+docker-compose down
 ```
 
-donde *seminariophp* es el valor de la variable `DB_VOLUME`
-
-## Iniciar servicios
+### Stop and reset the database (start fresh):
 
 ```bash
-docker compose up -d
-```
-
-## Terminar servicios
-
-```bash
-docker compose down -v
-```
-
-## Eliminar base de datos
-
-```bash
-docker volume rm seminariophp
+docker-compose down -v
 ```

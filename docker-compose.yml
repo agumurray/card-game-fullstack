@@ -1,6 +1,14 @@
 #version: '3.8'
 
 services:
+  composer:
+    image: composer
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: >
+      bash -c "([ ! -f composer.json ] && composer require slim/slim:'4.*' slim/psr7) || ([ ! -d vendor ] && composer install) || exit 0"
+
   app:
     build: .
     ports:
@@ -8,7 +16,10 @@ services:
     volumes:
       - .:/var/www/html
     depends_on:
-      - db
+      composer:
+        condition: service_completed_successfully
+      db:
+        condition: service_started
     networks:
       - app-network
     env_file:

@@ -7,8 +7,7 @@ A RESTful API for an online card game built with PHP, Slim Framework, and Docker
 Make sure you have the following installed and configured on your system:
 
 1. Docker  
-2. Composer  
-3. PHP with the `zip` extension enabled in `php.ini`
+2. PHP with the `zip` extension enabled in `php.ini`
 
 ---
 
@@ -25,12 +24,6 @@ Make sure you have the following installed and configured on your system:
 
    ```bash
    cp .env.dist .env
-   ```
-
-3. Install dependencies:
-
-   ```bash
-   composer install
    ```
 
 ---

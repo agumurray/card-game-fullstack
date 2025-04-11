@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Controllers\AuthController;
 use App\Controllers\UsuarioController;
+use App\Controllers\MazoController;
 use App\Middleware\CorsMiddleware;
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
@@ -44,7 +45,10 @@ $app->get('/', function (
 $app->post('/register', [AuthController::class, 'register']);
 $app->post('/login', [AuthController::class, 'login']);
 
-// Usuarios
+// Usuario
 $app->put('/usuario/{usuario}', [UsuarioController::class, 'actualizar']);
+
+//Mazo
+$app->post('/mazos', [MazoController::class, 'agregar']);
 
 $app->run();

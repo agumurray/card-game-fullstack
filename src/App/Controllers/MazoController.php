@@ -47,7 +47,11 @@ class MazoController
         }
 
 
-        return $this->withJson($response, ['status' => 'mazo creado']);
+        return $this->withJson($response, [
+            'status' => 'success',
+            'id mazo' => $id_mazo,
+            'nombre mazo' => $nombre_mazo
+        ]);
     }
 
     private function withJson(Response $response, array $data, int $status = 200): Response

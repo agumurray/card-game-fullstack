@@ -52,8 +52,21 @@ class UsuarioRepository
         $pdo = $this->database->getConnection();
         $stmt = $pdo->prepare("SELECT * FROM usuario WHERE usuario = :usuario");
         $stmt->execute([':usuario' => $usuario]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado !== false ? $resultado : null;
     }
+
+    public function buscarIDPorToken(string $token): int|false
+    {
+        $pdo = $this->database->getConnection();
+        $stmt = $pdo->prepare("SELECT id FROM usuario WHERE token = :token");
+        $stmt->execute([':token' => $token]);
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        return $resultado ? (int)$resultado['id'] : false;
+    }
+    
 
     public function guardarToken(int $id, string $token, int $exp): void
     {

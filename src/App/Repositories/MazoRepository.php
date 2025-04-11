@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Database;
+use PDO;
+
+class MazoRepository
+{
+    public function __construct(private Database $database)
+    {
+    }
+
+    public function crearMazo(int $id, string $nombre_mazo): int|false
+    {
+        $pdo = $this->database->getConnection();
+    
+        //Verificar si el usuario ya tiene 3 mazos
+        $check = $pdo->prepare("SELECT COUNT(*) FROM mazo WHERE usuario_id = :usuario_id");
+        $check->execute([':usuario_id' => $id]);
+        $cantidad = (int) $check->fetchColumn();
+    
+        if ($cantidad >= 3) {
+            return false; 
+        }
+
+        $check = $pdo->prepare("SELECT COUNT(*) FROM mazo WHERE nombre = :nombre");
+        $check->execute([':nombre' => $nombre_mazo]);
+        $cantidad = (int) $check->fetchColumn();
+    
+        if ($cantidad >= 1) {
+            return false; 
+        }
+    
+        $stmt = $pdo->prepare("INSERT INTO mazo (usuario_id, nombre) VALUES (:usuario_id, :nombre)");
+    
+        if ($stmt->execute([
+            ':usuario_id' => $id,
+            ':nombre' => $nombre_mazo,
+        ])) {
+            return (int) $pdo->lastInsertId();
+        }
+    
+        return false;
+    }
+    
+    
+}

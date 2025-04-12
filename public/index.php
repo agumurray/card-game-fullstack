@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Controllers\AuthController;
 use App\Controllers\UsuarioController;
 use App\Controllers\MazoController;
+use App\Controllers\PartidaController;
 use App\Middleware\CorsMiddleware;
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
@@ -50,5 +51,8 @@ $app->put('/usuario/{usuario}', [UsuarioController::class, 'actualizar']);
 
 //Mazo
 $app->post('/mazos', [MazoController::class, 'agregar']);
+
+//Partida
+$app->post('/partida', [PartidaController::class, 'crearPartida']);
 
 $app->run();

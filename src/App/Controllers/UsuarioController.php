@@ -22,6 +22,11 @@ class UsuarioController
             return $this->withJson($response, ['status' => 'error', 'message' => 'Token inválido o expirado'], 401);
         }
 
+        $error = $this->repo->validarContrasenia($data['contrasenia']);
+        if ($error) {
+            return $this->withJson($response, ['error' => $error], 400);
+        }
+
         $success = $this->repo->actualizarUsuario($id_usuario, $data['nombre'], $data['contrasenia']);
 
         if ($success) {

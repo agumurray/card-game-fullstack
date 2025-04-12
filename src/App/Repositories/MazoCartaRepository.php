@@ -35,5 +35,12 @@ class MazoCartaRepository
         }
     }
     
+    public function actualizarCartas(int $id_mazo):bool
+    {
+        $pdo = $this->database->getConnection();
+
+        $stmt = $pdo->prepare("UPDATE mazo_carta SET estado='en_mano' WHERE mazo_id=:id_mazo");
+        return $stmt->execute(['id_mazo' => $id_mazo]);
+    }
     
 }

@@ -19,7 +19,7 @@ class PartidaController
     {
 
         $data = json_decode($request->getBody()->getContents(), true);
-        $id_usuario = $data['id_usuario'] ?? '';
+        $id_usuario = $request->getAttribute('id_usuario');
         $id_mazo = $data['id_mazo'] ?? '';
 
         if (!$this->repo_mazo->validarMazo($id_usuario,$id_mazo)) {

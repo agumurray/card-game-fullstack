@@ -26,9 +26,9 @@ class AuthMiddleware implements MiddlewareInterface
         // Obtener token e ID del body si no vino por la ruta
         $data = $request->getParsedBody();
         $token = $data['token'] ?? null;
-        $id_usuario ??= $data['usuario'] ?? null; // Usa el del body si no vino en la ruta
+        $id_usuario ??= $data['usuario'] ?? null;
 
-        // Si el ID de usuario no llegó por la ruta ni por el body, buscarlo por token
+        // Si no se recibió el ID pero sí el token, buscar el ID a partir del token
         if (empty($id_usuario) && !empty($token)) {
             $id_usuario = $this->usuarioRepo->buscarIDPorToken($token);
         }
@@ -41,7 +41,10 @@ class AuthMiddleware implements MiddlewareInterface
             ], 401);
         }
 
-        return $handler->handle($request);
+        // Pasar id_usuario como atributo 
+        $request = $request->withAttribute('id_usuario', $id_usuario);
+        return $handler->handle($request); 
+
     }
 
     private function withJson(array $data, int $status): Response

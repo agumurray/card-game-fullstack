@@ -20,12 +20,7 @@ class PartidaController
 
         $data = json_decode($request->getBody()->getContents(), true);
         $id_usuario = $data['id_usuario'] ?? '';
-        $token = $data['token'] ?? '';
         $id_mazo = $data['id_mazo'] ?? '';
-
-        if (!$this->repo_usuario->tokenValido($id_usuario, $token)) {
-            return $this->withJson($response, ['status' => 'error', 'message' => 'Token inválido o expirado'], 401);
-        }
 
         if (!$this->repo_mazo->validarMazo($id_usuario,$id_mazo)) {
             return $this->withJson($response, ['error' => 'este mazo no pertence al usuario logueado'], 401);

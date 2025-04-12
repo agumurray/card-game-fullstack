@@ -16,15 +16,11 @@ class UsuarioRepository
     {
 
         if (empty($data['nombre']) || empty($data['usuario']) || empty($data['clave'])) {
-            return 'Todos los campos (nombre, usuario, password) son obligatorios';
+            return 'Todos los campos son obligatorios';
         }
 
         if (!preg_match('/^[a-zA-Z0-9]{6,20}$/', $data['usuario'])) {
             return 'El nombre de usuario debe tener entre 6 y 20 caracteres y solo contener letras y números';
-        }
-
-        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $data['clave'])) {
-            return 'La contraseña debe tener al menos 8 caracteres, mayúscula, minúscula, al menos un numero y un carácter especial';
         }
 
         $pdo = $this->database->getConnection();

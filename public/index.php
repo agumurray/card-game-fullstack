@@ -6,7 +6,11 @@ use App\Controllers\AuthController;
 use App\Controllers\UsuarioController;
 use App\Controllers\MazoController;
 use App\Controllers\PartidaController;
+
+use App\Middleware\AuthMiddleware;
+use App\Middleware\ClaveMiddleware;
 use App\Middleware\CorsMiddleware;
+
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
 use Psr\Http\Message\ResponseInterface;
@@ -43,16 +47,21 @@ $app->get('/', function (
 });
 
 // Autenticación
-$app->post('/register', [AuthController::class, 'register']);
+$app->post('/register', [AuthController::class, 'register'])
+    ->add(ClaveMiddleware::class);
 $app->post('/login', [AuthController::class, 'login']);
 
 // Usuario
-$app->put('/usuario/{usuario}', [UsuarioController::class, 'actualizar']);
+$app->put('/usuario/{usuario}', [UsuarioController::class, 'actualizar'])
+    ->add(AuthMiddleware::class)
+    ->add(ClaveMiddleware::class);
 
 //Mazo
-$app->post('/mazos', [MazoController::class, 'agregar']);
+$app->post('/mazos', [MazoController::class, 'agregar'])
+    ->add(AuthMiddleware::class);
 
 //Partida
-$app->post('/partida', [PartidaController::class, 'crearPartida']);
+$app->post('/partida', [PartidaController::class, 'crearPartida'])
+    ->add(AuthMiddleware::class);
 
 $app->run();

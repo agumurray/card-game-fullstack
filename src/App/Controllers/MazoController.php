@@ -24,11 +24,6 @@ class MazoController
 
         $id = $this->repo_usuario->buscarIDPorToken($token);
 
-        if (!$id || !$this->repo_usuario->tokenValido($id, $token)) {
-            return $this->withJson($response, ['status' => 'error', 'message' => 'Token inválido o expirado'], 401);
-        }
-        
-
         if (!is_array($cartas) || count($cartas) === 0 || count($cartas) > 5 || empty($nombre_mazo) || (count($cartas) !== count(array_unique($cartas)))) {
             return $this->withJson($response, [
                 'status' => 'error',

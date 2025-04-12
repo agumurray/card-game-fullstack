@@ -18,16 +18,7 @@ class UsuarioController
         $id_usuario = $args['usuario'];
         $data = json_decode($request->getBody()->getContents(), true);
 
-        if (!$this->repo->tokenValido($id_usuario, $data['token'] ?? '')) {
-            return $this->withJson($response, ['status' => 'error', 'message' => 'Token inválido o expirado'], 401);
-        }
-
-        $error = $this->repo->validarContrasenia($data['contrasenia']);
-        if ($error) {
-            return $this->withJson($response, ['error' => $error], 400);
-        }
-
-        $success = $this->repo->actualizarUsuario($id_usuario, $data['nombre'], $data['contrasenia']);
+        $success = $this->repo->actualizarUsuario($id_usuario, $data['nombre'], $data['clave']);
 
         if ($success) {
             return $this->withJson($response, ['mensaje' => 'Usuario actualizado correctamente']);

@@ -11,6 +11,18 @@ class MazoRepository
     {
     }
 
+
+    public function validarMazo(int $id_usuario, int $id_mazo):?string
+    {
+        $pdo = $this->database->getConnection();
+
+        $stmt = $pdo->prepare("SELECT usuario_id FROM mazo WHERE id=:id_mazo");
+        $stmt->execute(['id_mazo' => $id_mazo]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $user && $id_usuario==$user['usuario_id'];
+    }
+
     public function crearMazo(int $id, string $nombre_mazo): int|false
     {
         $pdo = $this->database->getConnection();

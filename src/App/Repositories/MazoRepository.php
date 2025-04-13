@@ -36,6 +36,7 @@ class MazoRepository
             return false; 
         }
 
+        //Verificar que no exista un mazo con el mismo nombre
         $check = $pdo->prepare("SELECT COUNT(*) FROM mazo WHERE nombre = :nombre");
         $check->execute([':nombre' => $nombre_mazo]);
         $cantidad = (int) $check->fetchColumn();
@@ -44,6 +45,7 @@ class MazoRepository
             return false; 
         }
     
+        //Insertar el mazo y devolver el id del mismo
         $stmt = $pdo->prepare("INSERT INTO mazo (usuario_id, nombre) VALUES (:usuario_id, :nombre)");
     
         if ($stmt->execute([

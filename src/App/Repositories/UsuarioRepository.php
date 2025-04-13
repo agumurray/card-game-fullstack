@@ -31,15 +31,6 @@ class UsuarioRepository
 
         return $exists > 0 ? 'El usuario ya existe' : null;
     }
-
-    public function validarContrasenia(string $contrasenia): ?string 
-    {
-        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $contrasenia)){
-            return 'la contrasena debe tener al menos 8 caracteres,mayuscula,minuscula y algun caracter especial';
-        }
-        return null;
-    }
-
     public function crearUsuario($data): bool
     {
         $pdo = $this->database->getConnection();

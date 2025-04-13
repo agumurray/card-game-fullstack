@@ -1,4 +1,3 @@
-```markdown
 # Card Game PHP API
 
 A RESTful API for an online card game built with PHP, Slim Framework, and Docker.

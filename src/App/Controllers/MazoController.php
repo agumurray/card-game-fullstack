@@ -20,9 +20,7 @@ class MazoController
         $data = $request->getParsedBody();
         $cartas = $data['cartas'] ?? '';
         $nombre_mazo = $data['nombre'] ?? '';
-        $token = $data['token'] ?? '';
-
-        $id = $this->repo_usuario->buscarIDPorToken($token);
+        $id = $request->getAttribute('id_usuario');
 
         if (!is_array($cartas) || count($cartas) === 0 || count($cartas) > 5 || empty($nombre_mazo) || (count($cartas) !== count(array_unique($cartas)))) {
             return $this->withJson($response, [

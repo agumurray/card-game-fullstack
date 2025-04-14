@@ -56,7 +56,7 @@ $app->put('/usuario/{usuario}', [UsuarioController::class, 'actualizar'])
     ->add(AuthMiddleware::class)
     ->add(ClaveMiddleware::class);
 
-$app->get('/usuario/{id}',[UsuarioController::class,'obtener'])
+$app->get('/usuario/{usuario}',[UsuarioController::class,'obtener'])
     ->add(AuthMiddleware::class);
 
 //Mazo

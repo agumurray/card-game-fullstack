@@ -33,14 +33,22 @@ class AuthMiddleware implements MiddlewareInterface
             $id_usuario = $this->usuarioRepo->buscarIDPorToken($token);
         }
 
-        // Si el ID o el token no son válidos, devolver error
-        if (empty($id_usuario) || empty($token) || !$this->usuarioRepo->tokenValido((int) $id_usuario, $token)) {
+        // Si no se encuentra el ID, devolver error
+        if (empty($id_usuario)) {
+            return $this->withJson([
+                'status' => 'error',
+                'message' => 'Usuario no encontrado'
+            ], 400);
+        }
+        
+        //Si se encuentra el ID pero el usuario no esta logueado, devolver error
+        if (empty($token) || !$this->usuarioRepo->tokenValido((int) $id_usuario, $token)) {
             return $this->withJson([
                 'status' => 'error',
                 'message' => 'Token inválido o expirado'
             ], 401);
         }
-
+        
         // Pasar id_usuario como atributo 
         $request = $request->withAttribute('id_usuario', $id_usuario);
         return $handler->handle($request); 

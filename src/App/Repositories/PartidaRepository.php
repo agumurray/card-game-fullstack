@@ -21,4 +21,25 @@ class PartidaRepository
             ':id_mazo'=> $id_mazo
         ]);
     }
+
+    public function obtenerIDMazo(int $id_partida): int
+    {
+        $pdo = $this->database->getConnection();
+
+        $stmt = $pdo->prepare("SELECT mazo_id FROM partida WHERE id = :id_partida");
+        $stmt->execute([':id_partida' => $id_partida]);
+
+        return $stmt->fetchColumn();
+    }
+
+    public function finalizarPartida(int $id_partida, string $resultado): void
+    {
+        $pdo = $this->database->getConnection();
+
+        $update = $pdo->prepare("UPDATE partida SET el_usuario = :resultado, estado = 'finalizada' WHERE id = :id_partida");
+        $update->execute([
+            'resultado' => $resultado,
+            'id_partida' => $id_partida
+        ]);
+    }
 }

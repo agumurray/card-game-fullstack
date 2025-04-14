@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Controllers\AuthController;
+use App\Controllers\JuegoController;
 use App\Controllers\UsuarioController;
 use App\Controllers\MazoController;
 use App\Controllers\PartidaController;
@@ -63,8 +64,11 @@ $app->get('/usuario/{usuario}',[UsuarioController::class,'obtener'])
 $app->post('/mazos', [MazoController::class, 'agregar'])
     ->add(AuthMiddleware::class);
 
-//Partida
-$app->post('/partida', [PartidaController::class, 'crearPartida'])
+//Juego
+$app->post('/partida', [JuegoController::class, 'crearPartida'])
+    ->add(AuthMiddleware::class);
+
+$app->post('/jugadas', [JuegoController::class, 'crearJugada'])
     ->add(AuthMiddleware::class);
 
 $app->run();

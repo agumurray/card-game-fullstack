@@ -27,6 +27,18 @@ class UsuarioController
         return $this->withJson($response, ['error' => 'No se pudo actualizar el usuario'], 500);
     }
 
+    public function obtener(Request $request, Response $response, array $args):Response
+    {
+        $id_usuario=$args['id'];
+        //busco usuario
+        $usuario=$this->repo->buscarPorId($id_usuario);
+        if(!$usuario){
+            return $this->withJson($response,['error'=>'usuario no encontrado'], 404);
+        }
+        unset($usuario['password']); //no mandar clave
+        return $this->withJson($response,['usuario'=>$usuario]);
+    }
+
     private function withJson(Response $response, array $data, int $status = 200): Response
     {
         $response->getBody()->write(json_encode($data));

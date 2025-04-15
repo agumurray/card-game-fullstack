@@ -43,6 +43,14 @@ class MazoCartaRepository
         return $stmt->execute(['id_mazo' => $id_mazo]);
     }
 
+    public function buscarIdCartas(int $id_mazo):array
+    {
+        $pdo = $this->database->getConnection();
+        $stmt = $pdo->query("SELECT carta_id FROM mazo_carta WHERE mazo_id=$id_mazo");
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $data;
+    }
+    
     public function obtenerCartasEnMano(int $mazo_id): array
     {
         $pdo = $this->database->getConnection();

@@ -26,14 +26,16 @@ class JuegoController
         $id_usuario = $request->getAttribute('id_usuario');
         $id_mazo = $data['id_mazo'] ?? '';
         $id_mazo_servidor = 1;
-
+        
         if (!$this->repo_mazo->validarMazo($id_usuario,$id_mazo)) {
             return $this->withJson($response, ['error' => 'este mazo no pertence al usuario logueado'], 401);
         }
-
-        $success = $this->repo_partida->crearPartida($id_usuario,$id_mazo) && $this->repo_mazo_carta->actualizarCartas($id_mazo) && $this->repo_mazo_carta->actualizarCartas($id_mazo_servidor);
-        if ($success){
-            return $this->withJson($response, ['mensaje' => 'Partida creada correctamente']);
+        $id_partida = $this->repo_partida->crearPartida($id_usuario,$id_mazo);
+        $cartas = $this->repo_mazo_carta->actualizarCartas($id_mazo);
+        $datocarta = $this->repo_mazo_carta->buscarIdCartas($id_mazo);
+        if ($id_partida && $cartas){
+            $descarta=$this->repo_carta->mostrarCartas($datocarta);
+            return $this->withJson($response, ['mensaje' => 'Partida creada correctamente','id de partida'=> $id_partida,'cartas'=> $descarta]);
         }
 
         return $this->withJson($response, ['error' => 'No se pudo crear la partida'], 500);

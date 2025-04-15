@@ -26,6 +26,19 @@ class CartaRepository
         return true;
     }
 
+    public function mostrarCartas(array $cartas):array
+    {
+        $pdo = $this->database->getConnection();
+        $i=0;
+        foreach ($cartas as $key=>$value){
+            $id_cartas[$i]=(int)$value['carta_id'];
+            $i = $i+1;
+        }
+            $stmt = $pdo->query("SELECT id,nombre,ataque_nombre,ataque FROM carta WHERE id IN (". implode(',',$id_cartas).")");
+            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $data;
+    }
+    
     public function obtenerFuerza(int $id_carta): int
     {
         $pdo = $this->database->getConnection();

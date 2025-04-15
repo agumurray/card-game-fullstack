@@ -27,6 +27,18 @@ class UsuarioController
         return $this->withJson($response, ['error' => 'No se pudo actualizar el usuario'], 500);
     }
 
+    public function obtener(Request $request, Response $response, array $args):Response
+    {
+        $id_usuario=$args['usuario'];
+        //busco usuario
+        $usuario=$this->repo->buscarPorId($id_usuario);
+        //if(!$usuario){ este if podria eliminarse, el authmiddleware bloquea el acceso al controlador de usuarios inexistentes
+        //    return $this->withJson($response,['error'=>'usuario no encontrado'], 404);
+        //}
+        //unset($usuario['password']); no mandar clave -- esta linea podria eliminarse ya que en la query de buscarPorId no se trae la clave
+        return $this->withJson($response,['usuario'=>$usuario]);
+    }
+
     private function withJson(Response $response, array $data, int $status = 200): Response
     {
         $response->getBody()->write(json_encode($data));

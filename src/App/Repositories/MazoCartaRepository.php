@@ -51,4 +51,26 @@ class MazoCartaRepository
         return $data;
     }
     
+    public function obtenerCartasEnMano(int $mazo_id): array
+    {
+        $pdo = $this->database->getConnection();
+    
+        $stmt = $pdo->prepare("SELECT carta_id FROM mazo_carta WHERE mazo_id = :mazo_id AND estado = 'en_mano'");
+        $stmt->execute([':mazo_id' => $mazo_id]);
+    
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+    
+
+    public function descartarCarta(int $carta_id, int $mazo_id):void
+    {
+        $pdo = $this->database->getConnection();
+
+        $stmt = $pdo->prepare("UPDATE mazo_carta SET estado = 'descartado' WHERE mazo_id = :mazo_id AND carta_id = :carta_id");
+        $stmt->execute([
+            ':mazo_id' => $mazo_id,
+            ':carta_id' => $carta_id
+        ]);
+    }
+    
 }

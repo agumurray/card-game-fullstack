@@ -52,6 +52,16 @@ class UsuarioRepository
         return $resultado !== false ? $resultado : null;
     }
 
+    public function buscarPorId(string $usuario): ?array
+    {
+        $pdo = $this->database->getConnection();
+        //uso query porque ejecuta una consulta simple
+        $stmt=$pdo->query("SELECT id,nombre,usuario FROM usuario WHERE id = $usuario");
+        $usuario=$stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $usuario ?: null;
+    }
+
     public function buscarIDPorToken(string $token): int|false
     {
         $pdo = $this->database->getConnection();

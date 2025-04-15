@@ -42,5 +42,13 @@ class MazoCartaRepository
         $stmt = $pdo->prepare("UPDATE mazo_carta SET estado='en_mano' WHERE mazo_id=:id_mazo");
         return $stmt->execute(['id_mazo' => $id_mazo]);
     }
+
+    public function buscarIdCartas(int $id_mazo):array
+    {
+        $pdo = $this->database->getConnection();
+        $stmt = $pdo->query("SELECT carta_id FROM mazo_carta WHERE mazo_id=$id_mazo");
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $data;
+    }
     
 }

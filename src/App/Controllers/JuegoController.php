@@ -32,6 +32,7 @@ class JuegoController
         }
         $id_partida = $this->repo_partida->crearPartida($id_usuario,$id_mazo);
         $cartas = $this->repo_mazo_carta->actualizarCartas($id_mazo);
+        $this->repo_mazo_carta->actualizarCartas($id_mazo_servidor);
         $datocarta = $this->repo_mazo_carta->buscarIdCartas($id_mazo);
         if ($id_partida && $cartas){
             $descarta=$this->repo_carta->mostrarCartas($datocarta);

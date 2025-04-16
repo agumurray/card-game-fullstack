@@ -9,7 +9,6 @@ use App\Repositories\MazoRepository;
 use App\Repositories\JugadaRepository;
 use App\Repositories\CartaRepository;
 use App\Repositories\GanaARepository;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -31,8 +30,8 @@ class JuegoController
             return $this->withJson($response, ['error' => 'este mazo no pertence al usuario logueado'], 401);
         }
         $id_partida = $this->repo_partida->crearPartida($id_usuario,$id_mazo);
-        $cartas = $this->repo_mazo_carta->actualizarCartas($id_mazo);
-        $this->repo_mazo_carta->actualizarCartas($id_mazo_servidor);
+        $cartas = $this->repo_mazo_carta->actualizarCartas($id_mazo, 'en_mano');
+        $this->repo_mazo_carta->actualizarCartas($id_mazo_servidor, 'en_mano');
         $datocarta = $this->repo_mazo_carta->buscarIdCartas($id_mazo);
         if ($id_partida && $cartas){
             $descarta=$this->repo_carta->mostrarCartas($datocarta);
@@ -47,22 +46,22 @@ class JuegoController
         $data = $request->getParsedBody();
         $id_partida = $data['id_partida'] ?? null;
         $id_carta_usuario = $data['id_carta'] ?? null;
-        
+
         if (!$id_partida || !$id_carta_usuario){
             return $this->withJson($response, ['error' => 'Faltan datos requeridos'], 400);
         }
+
+        $cantidad_jugadas = $this->repo_jugada->contarJugadasEnPartida($id_partida);
+        if ($cantidad_jugadas >= 5) {
+            return $this->withJson($response, ['error' => 'La partida ya finalizo'], 400);
+        }
+        
 
         $id_mazo = $this->repo_partida->obtenerIDMazo($id_partida);
         $cartas_disponibles = $this->repo_mazo_carta->obtenerCartasEnMano($id_mazo);
 
         if (!in_array($id_carta_usuario, $cartas_disponibles)){
             return $this->withJson($response, ['error' => 'La carta elegida no esta disponible'], 400);
-        }
-
-        $cantidad_jugadas = $this->repo_jugada->contarJugadasEnPartida($id_partida);
-
-        if ($cantidad_jugadas >= 5) {
-            return $this->withJson($response, ['error' => 'La partida ya finalizo'], 400);
         }
 
         $id_carta_servidor = $this->jugadaServidor();
@@ -101,8 +100,12 @@ class JuegoController
         
         // Si es la quinta jugada, se finaliza la partida y se devuelve info extra
         if ($cantidad_jugadas + 1 == 5){
+
             $resultado_final = $this->repo_jugada->determinarGanador($id_partida);
             $this->repo_partida->finalizarPartida($id_partida, $resultado_final);
+
+            $this->repo_mazo_carta->actualizarCartas($id_mazo, 'en_mazo');
+            $this->repo_mazo_carta->actualizarCartas(1, 'en_mazo');
         
             return $this->withJson($response, [
                 'status' => 'success',

@@ -64,6 +64,8 @@ $app->get('/usuario/{usuario}',[UsuarioController::class,'obtener'])
 $app->post('/mazos', [MazoController::class, 'agregar'])
     ->add(AuthMiddleware::class);
 
+$app->get('/cartas', [MazoController::class, 'buscarCartasFiltro']);
+
 //Juego
 $app->post('/partida', [JuegoController::class, 'crearPartida'])
     ->add(AuthMiddleware::class);

@@ -32,10 +32,6 @@ class UsuarioController
         $id_usuario=$args['usuario'];
         //busco usuario
         $usuario=$this->repo->buscarPorId($id_usuario);
-        //if(!$usuario){ este if podria eliminarse, el authmiddleware bloquea el acceso al controlador de usuarios inexistentes
-        //    return $this->withJson($response,['error'=>'usuario no encontrado'], 404);
-        //}
-        //unset($usuario['password']); no mandar clave -- esta linea podria eliminarse ya que en la query de buscarPorId no se trae la clave
         return $this->withJson($response,['usuario'=>$usuario]);
     }
 

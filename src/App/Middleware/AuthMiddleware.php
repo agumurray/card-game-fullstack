@@ -25,8 +25,14 @@ class AuthMiddleware implements MiddlewareInterface
 
         // Obtener token e ID del body si no vino por la ruta
         $data = $request->getParsedBody();
-        $token = $data['token'] ?? null;
         $id_usuario ??= $data['usuario'] ?? null;
+
+        $authHeader = $request->getHeaderLine('Authorization');
+        $token=null;
+
+        if (!empty($authHeader) && preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
+            $token = $matches[1];
+        }
 
         // Si no se recibió el ID pero sí el token, buscar el ID a partir del token
         if (empty($id_usuario) && !empty($token)) {

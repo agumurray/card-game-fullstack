@@ -63,5 +63,24 @@ class CartaRepository
         return $resultado['atributo_id'] ?? 0;
     }
 
+    public function buscarCartasPorAtributoYNombre(int $atributo, string $nombre): array
+    {
+        $pdo = $this->database->getConnection();
+    
+        $select = "SELECT id, nombre, ataque, ataque_nombre, atributo_id FROM carta";
+    
+        if (empty($nombre)) {
+            $stmt = $pdo->prepare("$select WHERE atributo_id = :atributo");
+            $stmt->bindValue(':atributo', $atributo);
+        } else {
+            $stmt = $pdo->prepare("$select WHERE atributo_id = :atributo AND LOWER(nombre) LIKE LOWER(:nombre)");
+            $stmt->bindValue(':atributo', $atributo);
+            $stmt->bindValue(':nombre', "%$nombre%");
+        }
+    
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
     
 }

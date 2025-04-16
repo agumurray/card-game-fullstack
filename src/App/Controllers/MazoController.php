@@ -47,6 +47,28 @@ class MazoController
         ]);
     }
 
+    public function buscarCartasFiltro(Request $request, Response $response): Response
+    {
+        $params = $request->getQueryParams();
+        $atributo = $params['atributo'] ?? null;
+        $nombre = $params['nombre'] ?? '';
+    
+        if (empty($atributo)) {
+            return $this->withJson($response, [
+                'error' => 'El parámetro "atributo" es obligatorio.'
+            ], 400);
+        }
+    
+        $cartas = $this->repo_cartas->buscarCartasPorAtributoYNombre($atributo, $nombre);
+        if (empty($cartas)) {
+            return $this->withJson($response, [
+                'mensaje' => 'No se encontraron cartas que coincidan con los filtros proporcionados.'
+            ], 404);
+        }
+        
+        return $this->withJson($response, $cartas);
+    }
+
     private function withJson(Response $response, array $data, int $status = 200): Response
     {
         $response->getBody()->write(json_encode($data));

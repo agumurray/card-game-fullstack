@@ -29,6 +29,13 @@ class JuegoController
         if (!$this->repo_mazo->validarMazo($id_usuario,$id_mazo)) {
             return $this->withJson($response, ['error' => 'este mazo no pertence al usuario logueado'], 401);
         }
+
+        $id_partida = $this->repo_partida->partidaEnCurso($id_usuario);
+        if($id_partida){
+            return $this->withJson($response, ['error' => 'Este usuario ya tiene una partida en curso',
+            'id_partida en curso'=> $id_partida], 400);
+        }
+
         $id_partida = $this->repo_partida->crearPartida($id_usuario,$id_mazo);
         $cartas = $this->repo_mazo_carta->actualizarCartas($id_mazo, 'en_mano');
         $this->repo_mazo_carta->actualizarCartas($id_mazo_servidor, 'en_mano');

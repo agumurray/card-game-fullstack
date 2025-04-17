@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Repositories\MazoCartaRepository;
+use App\Repositories\PartidaRepository;
 use App\Repositories\UsuarioRepository;
 use App\Repositories\CartaRepository;
 use App\Repositories\MazoRepository;
@@ -11,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class MazoController
 {
-    public function __construct(private MazoRepository $repo_mazo, private UsuarioRepository $repo_usuario, private CartaRepository $repo_cartas, private MazoCartaRepository $repo_mazo_carta)
+    public function __construct(private PartidaRepository $repo_partida, private MazoRepository $repo_mazo, private UsuarioRepository $repo_usuario, private CartaRepository $repo_cartas, private MazoCartaRepository $repo_mazo_carta)
     {
     }
 
@@ -67,6 +68,25 @@ class MazoController
         }
         
         return $this->withJson($response, $cartas);
+    }
+
+    public function eliminarMazo(Request $request, Response $response, array $args): Response
+    {
+        $id_mazo = $args['mazo'];
+        $id_usuario = $request->getAttribute('id_usuario');
+        if (!$this->repo_mazo->validarMazo($id_usuario,$id_mazo)) {
+            return $this->withJson($response, ['error' => 'este mazo no pertence al usuario logueado'], 401);
+        }
+        if($this->repo_partida->mazoUtilizado($id_mazo)) {
+            return $this->withJson($response, ['error' => 'el mazo ya fue utilizado, no se puede borrar'], 401);
+        }
+        if($this->repo_mazo->eliminarMazo($id_mazo)){
+            return $this->withJson($response,[
+                'status' => 'success',
+                'mazo eliminado' => $id_mazo
+            ]);
+        }
+        return $this->withJson($response, ['error' => 'el mazo no se pudo eliminar'],400);
     }
 
     private function withJson(Response $response, array $data, int $status = 200): Response

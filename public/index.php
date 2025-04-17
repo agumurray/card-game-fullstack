@@ -66,6 +66,9 @@ $app->post('/mazos', [MazoController::class, 'agregar'])
 
 $app->get('/cartas', [MazoController::class, 'buscarCartasFiltro']);
 
+$app->delete('/mazos/{mazo}',[MazoController::class,'eliminarMazo'])
+    ->add(AuthMiddleware::class);
+
 //Juego
 $app->post('/partida', [JuegoController::class, 'crearPartida'])
     ->add(AuthMiddleware::class);

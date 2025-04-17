@@ -72,5 +72,6 @@ $app->post('/partida', [JuegoController::class, 'crearPartida'])
 
 $app->post('/jugadas', [JuegoController::class, 'crearJugada'])
     ->add(AuthMiddleware::class);
-
+/*$app->get('/usuarios/partidas/cartas',[JuegoController::class,'cartasEnJuego'])
+    ->add(AuthMiddleware::class);*/
 $app->run();

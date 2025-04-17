@@ -125,6 +125,36 @@ class JuegoController
             'Fuerza servidor' => $fuerza_servidor
         ]);
     }
+    public function cartasEnJuego(Request $request,Response $response,array $args):Response
+    {
+        $partida_id = isset($data['partida']) ? (int) $data['partida'] : 0;
+        $usuario_id=(int) $data['usuario'];
+        $usuario_token = (int) $request->getAttribute('id_usuario');
+
+        if ($usuario_token !== $usuario_id && $usuario_id !== 1) {
+            return $this->withJson($response, ['error' => 'Acceso no autorizado'], 403);
+        }
+        // Conexión a la base de datos
+        $pdo = $this->database->getConnection();
+
+        // Consulta segura
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM partida WHERE id = :id");
+        $stmt->execute([':id' => $partida_id]);
+        $existe= $stmt->fetchColumn();
+        if(!$existe){
+            return $this->withJson($response, ['error' => 'partida no encontrada'], 404);
+        }
+        
+        if($usuario_id ===1){
+            $cartas=$this->repo_mazo_carta->obtenerCartasEnMano($usuario_id);
+        }else{
+            $stmt = $pdo->prepare("SELECT mazo_id FROM partida WHERE  id =:partida'");
+            $stmt=execute([':partida'=>$partida_id]);
+            $mazo_id=$stmt->fetchColumn();
+            $cartas=$this->repo_mazo_carta->obtenerCartasEnMano($mazo_id);
+        }
+
+    }
 
     private function withJson(Response $response, array $data, int $status = 200): Response
     {

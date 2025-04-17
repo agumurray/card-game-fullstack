@@ -58,5 +58,12 @@ class MazoRepository
         return false;
     }
     
+    public function eliminarMazo($id_mazo):bool
+    {
+        $pdo = $this->database->getConnection();
+
+        $stmt = $pdo->prepare("DELETE FROM mazo WHERE id=:id_mazo");
+        return $stmt->execute(['id_mazo' => $id_mazo]);
+    }
     
 }

@@ -25,6 +25,28 @@ class PartidaRepository
         return false;
     }
 
+
+    public function partidaEnCurso(int $id_usuario):int|false
+    {
+        $pdo = $this->database->getConnection();
+        $stmt = $pdo->prepare("SELECT id FROM partida WHERE usuario_id=$id_usuario AND estado = 'en_curso'");
+        if($stmt->execute()){
+            return $stmt->fetchColumn();
+        } else {
+            return false;
+        }
+    }
+
+    public function mazoUtilizado(int $id_mazo):bool
+    {
+        $pdo = $this->database->getConnection();
+
+        $stmt = $pdo->prepare("SELECT mazo_id FROM partida WHERE mazo_id = :id_mazo");
+        $stmt->execute([':id_mazo' => $id_mazo]);
+        $data = $stmt->fetchColumn();
+        return $data;
+    }
+
     public function obtenerIDMazo(int $id_partida): int
     {
         $pdo = $this->database->getConnection();

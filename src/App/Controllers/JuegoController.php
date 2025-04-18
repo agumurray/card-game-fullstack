@@ -11,7 +11,6 @@ use App\Repositories\CartaRepository;
 use App\Repositories\GanaARepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
 class JuegoController
 {
     public function __construct(private MazoRepository $repo_mazo, private UsuarioRepository $repo_usuario, private PartidaRepository $repo_partida, private MazoCartaRepository $repo_mazo_carta, private JugadaRepository $repo_jugada, private GanaARepository $repo_gana_a, private CartaRepository $repo_carta)
@@ -127,32 +126,24 @@ class JuegoController
     }
     public function cartasEnJuego(Request $request,Response $response,array $args):Response
     {
+        $data = $request->getParsedBody();
         $partida_id = isset($data['partida']) ? (int) $data['partida'] : 0;
-        $usuario_id=(int) $data['usuario'];
+        $usuario_id=(int) $data['usuarioid'];
         $usuario_token = (int) $request->getAttribute('id_usuario');
 
         if ($usuario_token !== $usuario_id && $usuario_id !== 1) {
             return $this->withJson($response, ['error' => 'Acceso no autorizado'], 403);
         }
-        // Conexión a la base de datos
-        $pdo = $this->database->getConnection();
 
         // Consulta segura
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM partida WHERE id = :id");
-        $stmt->execute([':id' => $partida_id]);
-        $existe= $stmt->fetchColumn();
-        if(!$existe){
-            return $this->withJson($response, ['error' => 'partida no encontrada'], 404);
+        $mazo_id=$this->repo_mazo_carta->buscarMazo($partida_id,$usuario_id);
+        if($mazo_id ===false){
+            return $this->withJson($response, ['error' => 'partida no encontrada o finalizada'], 404);
         }
-        
-        if($usuario_id ===1){
-            $cartas=$this->repo_mazo_carta->obtenerCartasEnMano($usuario_id);
-        }else{
-            $stmt = $pdo->prepare("SELECT mazo_id FROM partida WHERE  id =:partida'");
-            $stmt=execute([':partida'=>$partida_id]);
-            $mazo_id=$stmt->fetchColumn();
-            $cartas=$this->repo_mazo_carta->obtenerCartasEnMano($mazo_id);
-        }
+        $cartas_id=$this->repo_mazo_carta->obtenerCartasEnMano($mazo_id);
+        $atributo_ids=$this->repo_mazo_carta->obtenerAtributo($cartas_id);
+        //retorno atributos
+        return $this->withJson($response, ['cartas' => $atributo_ids], 200);
 
     }
 
@@ -170,5 +161,4 @@ class JuegoController
         return $carta;
     }
 
-    
 }

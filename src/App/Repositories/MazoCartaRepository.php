@@ -34,7 +34,31 @@ class MazoCartaRepository
             return false;
         }
     }
-    
+    public function buscarMazo(int $partida,int $usuario):int
+    {
+        $pdo = $this->database->getConnection();
+        if($usuario === 1){
+            return 1;
+        }
+        $stmt = $pdo->prepare("SELECT mazo_id FROM partida WHERE id= :id AND usuario_id = :usuario_id AND estado = 'en_curso'");
+        $stmt->execute(
+            [':id' => $partida,
+            ':usuario_id'=>$usuario]);
+        $mazo_id= $stmt->fetchColumn();
+        if ($mazo_id === false) {
+            return 0;  // O puedes devolver -1 si lo prefieres
+        }
+        return (int) $mazo_id;
+    }
+    public function obtenerAtributo(array $cartas_id):array
+    {
+        $in = str_repeat('?,', count($cartas_id) - 1) . '?';
+        $pdo = $this->database->getConnection();
+        $stmt = $pdo->prepare("SELECT nombre FROM atributo WHERE id IN($in)");
+        $stmt->execute($cartas_id);
+        $atributo_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return $atributo_ids;
+    }
     public function actualizarCartas(int $id_mazo, string $estado):bool
     {
         $pdo = $this->database->getConnection();
@@ -57,10 +81,8 @@ class MazoCartaRepository
     public function obtenerCartasEnMano(int $mazo_id): array
     {
         $pdo = $this->database->getConnection();
-    
         $stmt = $pdo->prepare("SELECT carta_id FROM mazo_carta WHERE mazo_id = :mazo_id AND estado = 'en_mano'");
         $stmt->execute([':mazo_id' => $mazo_id]);
-    
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
     

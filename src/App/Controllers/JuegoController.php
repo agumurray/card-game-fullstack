@@ -11,7 +11,6 @@ use App\Repositories\CartaRepository;
 use App\Repositories\GanaARepository;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
-
 class JuegoController
 {
     public function __construct(private MazoRepository $repo_mazo, private UsuarioRepository $repo_usuario, private PartidaRepository $repo_partida, private MazoCartaRepository $repo_mazo_carta, private JugadaRepository $repo_jugada, private GanaARepository $repo_gana_a, private CartaRepository $repo_carta)
@@ -132,6 +131,28 @@ class JuegoController
             'Fuerza servidor' => $fuerza_servidor
         ]);
     }
+    public function cartasEnJuego(Request $request,Response $response,array $args):Response
+    {
+        $data = $request->getParsedBody();
+        $partida_id = isset($data['partida']) ? (int) $data['partida'] : 0;
+        $usuario_id=(int) $data['usuarioid'];
+        $usuario_token = (int) $request->getAttribute('id_usuario');
+
+        if ($usuario_token !== $usuario_id && $usuario_id !== 1) {
+            return $this->withJson($response, ['error' => 'Acceso no autorizado'], 403);
+        }
+
+        // Consulta segura
+        $mazo_id=$this->repo_mazo_carta->buscarMazo($partida_id,$usuario_id);
+        if($mazo_id ===false){
+            return $this->withJson($response, ['error' => 'partida no encontrada o finalizada'], 404);
+        }
+        $cartas_id=$this->repo_mazo_carta->obtenerCartasEnMano($mazo_id);
+        $atributo_ids=$this->repo_mazo_carta->obtenerAtributo($cartas_id);
+        //retorno atributos
+        return $this->withJson($response, ['cartas' => $atributo_ids], 200);
+
+    }
 
     private function withJson(Response $response, array $data, int $status = 200): Response
     {
@@ -147,5 +168,4 @@ class JuegoController
         return $carta;
     }
 
-    
 }

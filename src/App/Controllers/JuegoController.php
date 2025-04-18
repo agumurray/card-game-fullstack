@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Repositories\AtributoRepository;
 use App\Repositories\MazoCartaRepository;
 use App\Repositories\UsuarioRepository;
 use App\Repositories\PartidaRepository;
@@ -13,7 +14,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 class JuegoController
 {
-    public function __construct(private MazoRepository $repo_mazo, private UsuarioRepository $repo_usuario, private PartidaRepository $repo_partida, private MazoCartaRepository $repo_mazo_carta, private JugadaRepository $repo_jugada, private GanaARepository $repo_gana_a, private CartaRepository $repo_carta)
+    public function __construct(private MazoRepository $repo_mazo, private UsuarioRepository $repo_usuario, private PartidaRepository $repo_partida, private MazoCartaRepository $repo_mazo_carta, private JugadaRepository $repo_jugada, private GanaARepository $repo_gana_a, private CartaRepository $repo_carta, private AtributoRepository $repo_atributo)
     {
     }
 
@@ -29,7 +30,7 @@ class JuegoController
             return $this->withJson($response, ['error' => 'este mazo no pertence al usuario logueado'], 401);
         }
 
-        $id_partida = $this->repo_partida->partidaEnCurso($id_usuario);
+        $id_partida = $this->repo_partida->tienePartidaEnCurso($id_usuario);
         if($id_partida){
             return $this->withJson($response, ['error' => 'Este usuario ya tiene una partida en curso',
             'id_partida en curso'=> $id_partida], 400);
@@ -133,24 +134,34 @@ class JuegoController
     }
     public function cartasEnJuego(Request $request,Response $response,array $args):Response
     {
-        $data = $request->getParsedBody();
-        $partida_id = isset($data['partida']) ? (int) $data['partida'] : 0;
-        $usuario_id=(int) $data['usuarioid'];
-        $usuario_token = (int) $request->getAttribute('id_usuario');
+        $usuario_id = $args['usuario'];
+        $partida_id = $args['partida'];
 
-        if ($usuario_token !== $usuario_id && $usuario_id !== 1) {
-            return $this->withJson($response, ['error' => 'Acceso no autorizado'], 403);
+        if ($usuario_id==1){
+            $cartas_id = $this->repo_mazo_carta->obtenerCartasEnMano(1);
+            $atributo_ids = $this->repo_carta->obtenerAtributosUnicosDeCartas($cartas_id);
+            $atributos_enMano = $this->repo_atributo->obtenerAtributosPorIds($atributo_ids);
+            
+            if (empty($atributos_enMano)){
+                return $this->withJson($response, ['error: ' => 'no hay partidas en curso, el servidor tiene todas las cartas en mazo'], 400);
+            }
+
+            return $this->withJson($response, ['atributos en mano (servidor): ' => $atributos_enMano], 200);
         }
 
         // Consulta segura
-        $mazo_id=$this->repo_mazo_carta->buscarMazo($partida_id,$usuario_id);
-        if($mazo_id ===false){
-            return $this->withJson($response, ['error' => 'partida no encontrada o finalizada'], 404);
+        if (!$this->repo_partida->verificarPartidaEnCursoDeUsuario($partida_id, $usuario_id)){
+            return $this->withJson($response, ['error' => 'La partida no pertenece al usuario o la misma ya finalizo'], 400);
         }
-        $cartas_id=$this->repo_mazo_carta->obtenerCartasEnMano($mazo_id);
-        $atributo_ids=$this->repo_mazo_carta->obtenerAtributo($cartas_id);
+
+
+        $mazo_id = $this->repo_partida->obtenerIDMazo($partida_id);
+        $cartas_id = $this->repo_mazo_carta->obtenerCartasEnMano($mazo_id);
+
+        $atributo_ids = $this->repo_carta->obtenerAtributosUnicosDeCartas($cartas_id);
+        $atributos_enMano = $this->repo_atributo->obtenerAtributosPorIds($atributo_ids);
         //retorno atributos
-        return $this->withJson($response, ['cartas' => $atributo_ids], 200);
+        return $this->withJson($response, ['atributos en mano: ' => $atributos_enMano], 200);
 
     }
 

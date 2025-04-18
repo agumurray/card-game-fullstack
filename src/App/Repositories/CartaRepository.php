@@ -81,6 +81,24 @@ class CartaRepository
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function obtenerAtributosUnicosDeCartas(array $cartaIds): array
+    {
+
+        if (empty($cartaIds)) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($cartaIds), '?'));
+        $query = "SELECT DISTINCT atributo_id FROM carta WHERE id IN ($placeholders)";
+
+        $pdo = $this->database->getConnection();
+        $stmt = $pdo->prepare($query);
+        $stmt->execute($cartaIds);
+
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
     
     
 }

@@ -6,12 +6,12 @@ use App\Controllers\AuthController;
 use App\Controllers\JuegoController;
 use App\Controllers\UsuarioController;
 use App\Controllers\MazoController;
-use App\Controllers\PartidaController;
 
 use App\Middleware\AuthMiddleware;
 use App\Middleware\ClaveMiddleware;
 use App\Middleware\CorsMiddleware;
 
+use App\Middleware\ServerMiddleware;
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
 use Psr\Http\Message\ResponseInterface;
@@ -75,6 +75,8 @@ $app->post('/partida', [JuegoController::class, 'crearPartida'])
 
 $app->post('/jugadas', [JuegoController::class, 'crearJugada'])
     ->add(AuthMiddleware::class);
-$app->get('/usuarios/partidas/cartas',[JuegoController::class,'cartasEnJuego'])
+
+$app->get('/usuarios/{usuario}/partidas/{partida}/cartas', [JuegoController::class, 'cartasEnJuego'])
     ->add(AuthMiddleware::class);
+
 $app->run();

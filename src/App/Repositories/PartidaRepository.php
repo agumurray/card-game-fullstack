@@ -26,7 +26,7 @@ class PartidaRepository
     }
 
 
-    public function partidaEnCurso(int $id_usuario):int|false
+    public function tienePartidaEnCurso(int $id_usuario):int|false
     {
         $pdo = $this->database->getConnection();
         $stmt = $pdo->prepare("SELECT id FROM partida WHERE usuario_id=$id_usuario AND estado = 'en_curso'");
@@ -35,6 +35,25 @@ class PartidaRepository
         } else {
             return false;
         }
+    }
+
+    public function verificarPartidaEnCursoDeUsuario(int $partida_id, int $usuario_id): bool
+    {
+        $pdo = $this->database->getConnection();
+
+        $query = "SELECT COUNT(*) FROM partida 
+        WHERE id = :partida_id 
+          AND usuario_id = :usuario_id 
+          AND estado = 'en_curso'";
+
+        $stmt = $pdo->prepare($query);
+        $stmt->bindParam(':partida_id', $partida_id);
+        $stmt->bindParam(':usuario_id', $usuario_id);
+        $stmt->execute();
+
+        $count = $stmt->fetchColumn();
+
+        return $count > 0;
     }
 
     public function mazoUtilizado(int $id_mazo):bool

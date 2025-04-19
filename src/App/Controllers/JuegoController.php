@@ -165,6 +165,27 @@ class JuegoController
 
     }
 
+    public function estadisticas(Request $request, Response $response): Response
+    {
+        $partidas = $this->repo_partida->obtenerPartidas();
+        foreach ($partidas as $key=>$value){
+            $id=$value['usuario_id'];
+            $resultado= $value['el_usuario'];
+            if(!isset($estadistica[$id])){
+                $user = $this->repo_usuario->buscarPorId($id);
+                $estadistica[$id]['id_usuario'] = $id;
+                $estadistica[$id]['nombre']= $user['nombre'];
+                $estadistica[$id]['gano']=0;
+                $estadistica[$id]['perdio']=0;
+                $estadistica[$id]['empato']=0;
+            }
+            $estadistica[$id][$resultado]+=1;
+        }
+        $estadistica = array_values($estadistica);
+        return $this->withJson($response, ['Estadisticas' => $estadistica]);
+    }
+
+
     private function withJson(Response $response, array $data, int $status = 200): Response
     {
         $response->getBody()->write(json_encode($data));

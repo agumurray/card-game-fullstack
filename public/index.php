@@ -79,4 +79,6 @@ $app->post('/jugadas', [JuegoController::class, 'crearJugada'])
 $app->get('/usuarios/{usuario}/partidas/{partida}/cartas', [JuegoController::class, 'cartasEnJuego'])
     ->add(AuthMiddleware::class);
 
+$app->get('/estadisticas',[JuegoController::class, 'estadisticas']);
+
 $app->run();

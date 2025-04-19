@@ -86,4 +86,14 @@ class PartidaRepository
             'id_partida' => $id_partida
         ]);
     }
+
+    public function obtenerPartidas(): array
+    {
+        $pdo = $this->database->getConnection();
+
+        $stmt= $pdo->prepare("SELECT usuario_id,el_usuario FROM partida WHERE estado='finalizada'");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }

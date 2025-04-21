@@ -181,6 +181,11 @@ class JuegoController
             }
             $estadistica[$id][$resultado]+=1;
         }
+
+        if (empty($estadistica)){
+            return $this->withJson($response, ['Error' => 'No hay ninguna partida cargada.'], 400);
+        }
+        
         $estadistica = array_values($estadistica);
         return $this->withJson($response, ['Estadisticas' => $estadistica]);
     }

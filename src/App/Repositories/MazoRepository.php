@@ -66,4 +66,12 @@ class MazoRepository
         return $stmt->execute(['id_mazo' => $id_mazo]);
     }
     
+    public function buscarMazosPorId($id_usuario):array
+    {
+        $pdo = $this->database->getConnection();
+        $stmt = $pdo->query("SELECT id,nombre FROM mazo WHERE usuario_id= $id_usuario");
+        //$stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }

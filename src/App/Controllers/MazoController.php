@@ -86,7 +86,26 @@ class MazoController
                 'mazo eliminado' => $id_mazo
             ]);
         }
-        return $this->withJson($response, ['error' => 'el mazo no se pudo eliminar'],400);
+        return $this->withJson($response, ['error' => 'el mazo no se pudo eliminar'],409);
+    }
+
+    public function mostrarMazos(Request $request, Response $response, array $args): Response
+    {
+        $id_usuario = $args['usuario'];
+        $mazos = $this->repo_mazo->buscarMazosPorId($id_usuario) ?? '';
+        if(!$mazos) {
+            return $this->withJson($response,['error'=>'el usuario no tiene mazos'],404);
+        }
+        foreach ($mazos as $key=>$value){
+            $datocarta = $this->repo_mazo_carta->buscarIdCartas($mazos[$key]['id']);
+            $mazos[$key]['cartas'] = $this->repo_cartas->mostrarCartas($datocarta);
+            //$datocarta = $this->repo_mazo_carta->buscarIdCartas($value['id']);
+            //$value['cartas']= $this->repo_cartas->mostrarCartas($datocarta);
+        }
+        return $this->withJson($response,[
+            'status' => 'success',
+            'Listado de mazos' => $mazos
+        ]);
     }
 
     private function withJson(Response $response, array $data, int $status = 200): Response

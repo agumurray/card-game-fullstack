@@ -62,7 +62,7 @@ class MazoController
         if ($sucess){
             return  $this->withJson($response,['mensaje'=>'mazo actualizado correctamente']);
         }
-        return $this->withJson($resposne,['mensaje'=> 'no se pudo actualizar el mazo'],500);
+        return $this->withJson($response,['mensaje'=> 'no se pudo actualizar el mazo'],500);
 
     }
 

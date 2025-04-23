@@ -65,6 +65,12 @@ class MazoRepository
         $stmt = $pdo->prepare("DELETE FROM mazo WHERE id=:id_mazo");
         return $stmt->execute(['id_mazo' => $id_mazo]);
     }
+    public function actualizarMazo($id,$nombre):bool
+    {
+        $pdo = $this->database->getConnection();
+        $stmt=$pdo->prepare("UPDATE mazo SET nombre = :nombre WHERE id = :id");
+        return $stmt->execute([':nombre'=>$nombre,':id'=>$id]);
+    }
     
     public function buscarMazosPorId($id_usuario):array
     {

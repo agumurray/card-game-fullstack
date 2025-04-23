@@ -47,6 +47,24 @@ class MazoController
             'nombre mazo' => $nombre_mazo
         ]);
     }
+    public function actualizarMazo(Request $request, Response $response, array $args): Response
+    {
+        $id_mazo =(int) $args['mazo'];
+        $data = $request->getParsedBody();
+        $nombre_mazo = $data['nombre'];
+        $id_usuario=$request->getAttribute('id_usuario');
+
+        if (!$this->repo_mazo->validarMazo($id_usuario,$id_mazo)) {
+            return $this->withJson($response, ['error' => 'este mazo no pertence al usuario logueado'], 401);
+        }
+        $sucess=$this->repo_mazo->actualizarMazo($id_mazo,$nombre_mazo);
+
+        if ($sucess){
+            return  $this->withJson($response,['mensaje'=>'mazo actualizado correctamente']);
+        }
+        return $this->withJson($resposne,['mensaje'=> 'no se pudo actualizar el mazo'],500);
+
+    }
 
     public function buscarCartasFiltro(Request $request, Response $response): Response
     {

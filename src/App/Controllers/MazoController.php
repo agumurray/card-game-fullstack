@@ -23,10 +23,10 @@ class MazoController
         $nombre_mazo = $data['nombre'] ?? '';
         $id = $request->getAttribute('id_usuario');
 
-        if (!is_array($cartas) || count($cartas) === 0 || count($cartas) > 5 || empty($nombre_mazo) || (count($cartas) !== count(array_unique($cartas)))) {
+        if (!is_array($cartas) || count($cartas) === 0 || count($cartas) != 5 || empty($nombre_mazo) || (count($cartas) !== count(array_unique($cartas)))) {
             return $this->withJson($response, [
                 'status' => 'error',
-                'message' => 'Debe enviarse un nombre de mazo y un array de entre 1 y 5 IDs de cartas unicos'
+                'message' => 'Debe enviarse un nombre de mazo y un array de 5 IDs de cartas unicos'
             ], 400);
         }
         

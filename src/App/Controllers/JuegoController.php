@@ -190,19 +190,18 @@ class JuegoController
         return $this->withJson($response, ['Estadisticas' => $estadistica]);
     }
 
-
-    private function withJson(Response $response, array $data, int $status = 200): Response
-    {
-        $response->getBody()->write(json_encode($data));
-        return $response->withStatus($status)->withHeader('Content-Type', 'application/json');
-    }
-
     private function jugadaServidor(): int
     {
         $cartas_disponibles = $this->repo_mazo_carta->obtenerCartasEnMano(1);
         $carta = $cartas_disponibles[array_rand($cartas_disponibles)];
         $this->repo_mazo_carta->descartarCarta($carta, 1);
         return $carta;
+    }
+
+    private function withJson(Response $response, array $data, int $status = 200): Response
+    {
+        $response->getBody()->write(json_encode($data));
+        return $response->withStatus($status)->withHeader('Content-Type', 'application/json');
     }
 
 }

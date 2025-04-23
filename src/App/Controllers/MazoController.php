@@ -32,12 +32,12 @@ class MazoController
         
         
         if(!$this->repo_cartas->validarCartas($cartas)){
-            return $this->withJson($response, ['status' => 'error', 'message' => 'Una o mas cartas no existen en la base de datos'], 401);
+            return $this->withJson($response, ['status' => 'error', 'message' => 'Una o mas cartas no existen en la base de datos'], 404);
         }
 
         $id_mazo = $this->repo_mazo->crearMazo($id,$nombre_mazo);
         if (!$id_mazo || !$this->repo_mazo_carta->crearMazo($cartas,$id_mazo)){
-            return $this->withJson($response, ['status'=>'error', 'message' => 'Error al insertar el mazo'], 401);
+            return $this->withJson($response, ['status'=>'error', 'message' => 'Error al insertar el mazo'], 400);
         }
 
 
@@ -59,14 +59,14 @@ class MazoController
         }
 
         if (!$this->repo_mazo->validarMazo($id_usuario,$id_mazo)) {
-            return $this->withJson($response, ['error' => 'este mazo no pertence al usuario logueado'], 400);
+            return $this->withJson($response, ['error' => 'este mazo no pertence al usuario logueado'], 401);
         }
         $sucess=$this->repo_mazo->actualizarMazo($id_mazo,$nombre_mazo);
 
         if ($sucess){
             return  $this->withJson($response,['mensaje'=>'mazo actualizado correctamente']);
         }
-        return $this->withJson($response,['mensaje'=> 'no se pudo actualizar el mazo'],500);
+        return $this->withJson($response,['mensaje'=> 'no se pudo actualizar el mazo'],400);
 
     }
 
@@ -101,7 +101,7 @@ class MazoController
             return $this->withJson($response, ['error' => 'este mazo no pertence al usuario logueado'], 401);
         }
         if($this->repo_partida->mazoUtilizado($id_mazo)) {
-            return $this->withJson($response, ['error' => 'el mazo ya fue utilizado, no se puede borrar'], 401);
+            return $this->withJson($response, ['error' => 'el mazo ya fue utilizado, no se puede borrar'], 409);
         }
         if($this->repo_mazo->eliminarMazo($id_mazo)){
             return $this->withJson($response,[
@@ -122,8 +122,6 @@ class MazoController
         foreach ($mazos as $key=>$value){
             $datocarta = $this->repo_mazo_carta->buscarIdCartas($mazos[$key]['id']);
             $mazos[$key]['cartas'] = $this->repo_cartas->mostrarCartas($datocarta);
-            //$datocarta = $this->repo_mazo_carta->buscarIdCartas($value['id']);
-            //$value['cartas']= $this->repo_cartas->mostrarCartas($datocarta);
         }
         return $this->withJson($response,[
             'status' => 'success',

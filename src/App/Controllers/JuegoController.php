@@ -45,7 +45,7 @@ class JuegoController
             return $this->withJson($response, ['mensaje' => 'Partida creada correctamente','id de partida'=> $id_partida,'cartas'=> $descarta]);
         }
 
-        return $this->withJson($response, ['error' => 'No se pudo crear la partida'], 500);
+        return $this->withJson($response, ['error' => 'No se pudo crear la partida'], 400);
     }
 
     public function crearJugada(Request $request, Response $response): Response
@@ -183,7 +183,7 @@ class JuegoController
         }
 
         if (empty($estadistica)){
-            return $this->withJson($response, ['Error' => 'No hay ninguna partida cargada.'], 400);
+            return $this->withJson($response, ['Error' => 'No hay ninguna partida cargada.'], 404);
         }
         
         $estadistica = array_values($estadistica);

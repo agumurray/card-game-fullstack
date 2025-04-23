@@ -24,7 +24,7 @@ class UsuarioController
             return $this->withJson($response, ['mensaje' => 'Usuario actualizado correctamente']);
         }
 
-        return $this->withJson($response, ['error' => 'No se pudo actualizar el usuario'], 500);
+        return $this->withJson($response, ['error' => 'No se pudo actualizar el usuario'], 400);
     }
 
     public function obtener(Request $request, Response $response, array $args):Response

@@ -69,6 +69,9 @@ $app->get('/usuarios/{usuario}/mazos', [MazoController::class, 'mostrarMazos'])
 
 $app->get('/cartas', [MazoController::class, 'buscarCartasFiltro']);
 
+$app->put('/mazos/{mazo}',[MazoController::class,'actualizarMazo'])
+    ->add(AuthMiddleware::class);
+    
 $app->delete('/mazos/{mazo}',[MazoController::class,'eliminarMazo'])
     ->add(AuthMiddleware::class);
 

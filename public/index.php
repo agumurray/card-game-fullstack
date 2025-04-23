@@ -11,7 +11,6 @@ use App\Middleware\AuthMiddleware;
 use App\Middleware\ClaveMiddleware;
 use App\Middleware\CorsMiddleware;
 
-use App\Middleware\ServerMiddleware;
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
 use Psr\Http\Message\ResponseInterface;

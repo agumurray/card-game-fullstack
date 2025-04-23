@@ -14,15 +14,6 @@ class UsuarioRepository
 
     public function validarRegistro($data): ?string
     {
-
-        // if (empty($data['nombre']) || empty($data['usuario']) || empty($data['clave'])) {
-        //     return 'Todos los campos son obligatorios';
-        // }
-
-        // if (!preg_match('/^[a-zA-Z0-9]{6,20}$/', $data['usuario'])) {
-        //     return 'El nombre de usuario debe tener entre 6 y 20 caracteres y solo contener letras y números';
-        // }
-
         $pdo = $this->database->getConnection();
 
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM usuario WHERE usuario = :usuario");

@@ -48,7 +48,7 @@ $app->get('/', function (
 });
 
 // Autenticación
-$app->post('/register', [AuthController::class, 'register'])
+$app->post('/registro', [AuthController::class, 'register'])
     ->add(ClaveMiddleware::class);
 $app->post('/login', [AuthController::class, 'login']);
 

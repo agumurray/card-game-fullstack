@@ -20,6 +20,15 @@ class AuthController
     {
         $data = $request->getParsedBody();
 
+        if (empty($data['nombre']) || empty($data['usuario']) || empty($data['clave'])) {
+            return $this->withJson($response, ['error' => 'Todos los campos son obligatorios'], 400);
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9]{6,20}$/', $data['usuario'])) {
+            return $this->withJson($response, ['error' => 'El nombre de usuario debe tener entre 6 y 20 caracteres y solo contener letras y números'], 400);
+
+        }
+
         $error = $this->repo->validarRegistro($data);
         if ($error) {
             return $this->withJson($response, ['error' => $error], 400);

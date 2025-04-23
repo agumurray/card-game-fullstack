@@ -12,7 +12,7 @@ class MazoRepository
     }
 
 
-    public function validarMazo(int $id_usuario, int $id_mazo):?string
+    public function validarMazo(int $id_usuario, int $id_mazo):bool
     {
         $pdo = $this->database->getConnection();
 

@@ -51,11 +51,15 @@ class MazoController
     {
         $id_mazo =(int) $args['mazo'];
         $data = $request->getParsedBody();
-        $nombre_mazo = $data['nombre'];
+        $nombre_mazo = $data['nombre'] ?? "";
         $id_usuario=$request->getAttribute('id_usuario');
 
+        if (empty($nombre_mazo)){
+            return $this->withJson($response, ['error' => 'Debe enviar un nombre de mazo'], 400);
+        }
+
         if (!$this->repo_mazo->validarMazo($id_usuario,$id_mazo)) {
-            return $this->withJson($response, ['error' => 'este mazo no pertence al usuario logueado'], 401);
+            return $this->withJson($response, ['error' => 'este mazo no pertence al usuario logueado'], 400);
         }
         $sucess=$this->repo_mazo->actualizarMazo($id_mazo,$nombre_mazo);
 
@@ -72,6 +76,7 @@ class MazoController
         $atributo = $params['atributo'] ?? null;
         $nombre = $params['nombre'] ?? '';
     
+        //chequear que si se envia un caracter distinto a un numero en el atributo devuelva error
         if (empty($atributo)) {
             return $this->withJson($response, [
                 'error' => 'El parámetro "atributo" es obligatorio.'

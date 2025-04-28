@@ -73,7 +73,7 @@ class MazoController
     public function buscarCartasFiltro(Request $request, Response $response): Response
     {
         $params = $request->getQueryParams();
-        $atributo = $params['atributo'] ?? null;
+        $atributo =(int) $params['atributo'] ?? null;
         $nombre = $params['nombre'] ?? '';
     
         //chequear que si se envia un caracter distinto a un numero en el atributo devuelva error
@@ -95,7 +95,7 @@ class MazoController
 
     public function eliminarMazo(Request $request, Response $response, array $args): Response
     {
-        $id_mazo = $args['mazo'];
+        $id_mazo =(int) $args['mazo'];
         $id_usuario = $request->getAttribute('id_usuario');
         if (!$this->repo_mazo->validarMazo($id_usuario,$id_mazo)) {
             return $this->withJson($response, ['error' => 'este mazo no pertence al usuario logueado'], 401);
@@ -114,7 +114,7 @@ class MazoController
 
     public function mostrarMazos(Request $request, Response $response, array $args): Response
     {
-        $id_usuario = $args['usuario'];
+        $id_usuario =(int) $args['usuario'];
         $mazos = $this->repo_mazo->buscarMazosPorId($id_usuario) ?? '';
         if(!$mazos) {
             return $this->withJson($response,['error'=>'el usuario no tiene mazos'],404);

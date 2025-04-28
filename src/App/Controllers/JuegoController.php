@@ -23,7 +23,7 @@ class JuegoController
 
         $data = json_decode($request->getBody()->getContents(), true);
         $id_usuario = $request->getAttribute('id_usuario');
-        $id_mazo = $data['id_mazo'] ?? '';
+        $id_mazo =(int) $data['id_mazo'] ?? '';
         $id_mazo_servidor = 1;
         
         if (!$this->repo_mazo->validarMazo($id_usuario,$id_mazo)) {

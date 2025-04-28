@@ -15,7 +15,7 @@ class UsuarioController
 
     public function actualizar(Request $request, Response $response, array $args): Response
     {
-        $id_usuario = $args['usuario'];
+        $id_usuario =(int) $args['usuario'];
         $data = json_decode($request->getBody()->getContents(), true);
 
         $success = $this->repo->actualizarUsuario($id_usuario, $data['nombre'], $data['clave']);

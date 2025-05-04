@@ -23,7 +23,7 @@ class JuegoController
 
         $data = json_decode($request->getBody()->getContents(), true);
         $id_usuario = $request->getAttribute('id_usuario');
-        $id_mazo =(int) $data['id_mazo'] ?? '';
+        $id_mazo = (int) ($data['id_mazo'] ?? '');
         $id_mazo_servidor = 1;
         
         if (!$this->repo_mazo->validarMazo($id_usuario,$id_mazo)) {
@@ -51,8 +51,8 @@ class JuegoController
     public function crearJugada(Request $request, Response $response): Response
     {
         $data = $request->getParsedBody();
-        $id_partida = $data['id_partida'] ?? null;
-        $id_carta_usuario = $data['id_carta'] ?? null;
+        $id_partida = (int) ($data['id_partida'] ?? null);
+        $id_carta_usuario = (int) ($data['id_carta'] ?? null);
 
         if (!$id_partida || !$id_carta_usuario){
             return $this->withJson($response, ['error' => 'Faltan datos requeridos'], 400);
@@ -134,8 +134,13 @@ class JuegoController
     }
     public function cartasEnJuego(Request $request,Response $response,array $args):Response
     {
-        $usuario_id = $args['usuario'];
-        $partida_id = $args['partida'];
+        $usuario_id = (int) ($args['usuario'] ?? '');
+        $partida_id = (int) ($args['partida'] ?? '');
+
+        if (!$usuario_id || !$partida_id){
+            return $this->withJson($response, ['error' => 'Faltan datos requeridos'], 400);
+        }
+
 
         if ($usuario_id==1){
             $cartas_id = $this->repo_mazo_carta->obtenerCartasEnMano(1);

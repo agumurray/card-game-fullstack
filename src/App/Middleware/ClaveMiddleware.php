@@ -12,9 +12,10 @@ class ClaveMiddleware
     public function __invoke(Request $request, Handler $handler): Response
     {
         $data = $request->getParsedBody();
+        $clave = $data['clave'] ?? null;
 
         // Validación de la contraseña
-        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $data['clave'])) {
+        if (!empty($clave) && (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $clave))) {
             return $this->withJson(['error' => 'La contraseña debe tener al menos 8 caracteres, mayúscula, minúscula, al menos un número y un carácter especial'], 400);
         }
 

@@ -17,8 +17,13 @@ class UsuarioController
     {
         $id_usuario =(int) $args['usuario'];
         $data = json_decode($request->getBody()->getContents(), true);
+        $nombre = $data['nombre'] ?? '';
 
-        $success = $this->repo->actualizarUsuario($id_usuario, $data['nombre'], $data['clave']);
+        if (!$nombre) {
+            return $this->withJson($response, ['error' => 'Debe enviarse un nombre de usuario'], 400);
+        }
+
+        $success = $this->repo->actualizarUsuario($id_usuario, $nombre, $data['clave']);
 
         if ($success) {
             return $this->withJson($response, ['mensaje' => 'Usuario actualizado correctamente']);

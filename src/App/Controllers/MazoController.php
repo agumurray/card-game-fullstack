@@ -73,7 +73,7 @@ class MazoController
     public function buscarCartasFiltro(Request $request, Response $response): Response
     {
         $params = $request->getQueryParams();
-        $atributo =(int) $params['atributo'] ?? null;
+        $atributo =(int) ($params['atributo'] ?? null);
         $nombre = $params['nombre'] ?? '';
     
         //chequear que si se envia un caracter distinto a un numero en el atributo devuelva error

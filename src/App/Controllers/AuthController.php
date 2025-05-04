@@ -19,8 +19,11 @@ class AuthController
     public function register(Request $request, Response $response): Response
     {
         $data = $request->getParsedBody();
+        $nombre = $data['nombre'] ?? null;
+        $usuario = $data['usuario'] ?? null;
+        $clave = $data['clave'] ?? null;
 
-        if (empty($data['nombre']) || empty($data['usuario']) || empty($data['clave'])) {
+        if (empty($nombre) || empty($usuario) || empty($clave)) {
             return $this->withJson($response, ['error' => 'Todos los campos son obligatorios'], 400);
         }
 

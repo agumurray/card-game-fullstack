@@ -82,8 +82,3 @@ Estas son las bibliotecas requeridas por la aplicación y su propósito:
 * **`firebase/php-jwt` (^6.11)**: Biblioteca para crear y verificar JSON Web Tokens (JWT), útil para autenticación y autorización.
 
 ---
-
-```
-
-¿Querés que este README lo suba directamente como `README.md` o querés que lo exporte a un archivo descargable?
-```

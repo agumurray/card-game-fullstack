@@ -1,8 +1,8 @@
+> ⚠️ **Nota**: Si bien este proyecto está subido en un repositorio de IDEAS, recomendamos abrir directamente el repositorio del mismo en GitHub: [https://github.com/agumurray/card-game-php.git](https://github.com/agumurray/card-game-php.git)
 ---
-
 # API de Juego de Cartas en PHP
 
-Una API RESTful para un juego de cartas en línea, construida con PHP, Slim Framework y Docker.
+Una API RESTful para un juego de cartas en línea, construida con PHP, Slim Framework y [Docker](https://www.docker.com/products/docker-desktop).
 
 ## Requisito Previo
 
@@ -19,7 +19,7 @@ Asegúrate de tener instalado y configurado el siguiente componente en tu sistem
 ```bash
 git clone https://github.com/agumurray/card-game-php.git
 cd card-game-php
-```
+````
 
 2. Copia el archivo de entorno de ejemplo:
 
@@ -65,6 +65,13 @@ docker-compose down -v
 
 ---
 
+## Esquema de Base de Datos
+
+El archivo [`init.sql`](init.sql) contiene el esquema de base de datos provisto en la práctica.
+**No se realizaron modificaciones** sobre el contenido original del mismo.
+
+---
+
 ## Dependencias (composer.json)
 
 Estas son las bibliotecas requeridas por la aplicación y su propósito:
@@ -75,3 +82,8 @@ Estas son las bibliotecas requeridas por la aplicación y su propósito:
 * **`firebase/php-jwt` (^6.11)**: Biblioteca para crear y verificar JSON Web Tokens (JWT), útil para autenticación y autorización.
 
 ---
+
+```
+
+¿Querés que este README lo suba directamente como `README.md` o querés que lo exporte a un archivo descargable?
+```

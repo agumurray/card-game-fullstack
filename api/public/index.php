@@ -86,4 +86,9 @@ $app->get('/usuarios/{usuario}/partidas/{partida}/cartas', [JuegoController::cla
 
 $app->get('/estadisticas',[JuegoController::class, 'estadisticas']);
 
+$app->get('/ping', function ($request, $response, $args) {
+    $response->getBody()->write(json_encode(["pong" => true]));
+    return $response->withHeader('Content-Type', 'application/json');
+});
+
 $app->run();

@@ -23,7 +23,7 @@ class AuthController
         $usuario = $data['usuario'] ?? null;
         $clave = $data['clave'] ?? null;
 
-        if (empty($nombre) || empty($usuario) || empty($clave)) {
+        if (empty($nombre) || empty($usuario)) {
             return $this->withJson($response, ['error' => 'Todos los campos son obligatorios'], 400);
         }
 
@@ -48,6 +48,8 @@ class AuthController
 
     public function login(Request $request, Response $response): Response
     {
+        date_default_timezone_set('America/Argentina/Buenos_Aires');
+
         $data = $request->getParsedBody();
         $usuario = $this->repo->buscarPorUsuario($data['usuario'] ?? '');
 
@@ -55,11 +57,14 @@ class AuthController
             return $this->withJson($response, ['status' => 'error', 'message' => 'Credenciales inválidas'], 401);
         }
 
+        $iat = time();
+        $exp = $iat + 3600;
+
         $payload = [
             'sub' => $usuario['id'],
             'name' => $usuario['nombre'],
             'iat' => time(),
-            'exp' => time() + 3600,
+            'exp' => $exp,
         ];
 
         $token = JWT::encode($payload, $this->secretKey, 'HS256');

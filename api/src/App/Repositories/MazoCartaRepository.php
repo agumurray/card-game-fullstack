@@ -15,54 +15,63 @@ class MazoCartaRepository
     {
         $pdo = $this->database->getConnection();
         $pdo->beginTransaction(); //inicia una transaccion en sql, lo que permite agrupar las inserciones como una operacion en conjunto
-    
+
         try {
             $stmt = $pdo->prepare("INSERT INTO mazo_carta (carta_id, mazo_id, estado) VALUES (:carta_id, :mazo_id, :estado)");
-    
+
             foreach ($cartas as $carta_id) {
                 $stmt->execute([
                     ':carta_id' => $carta_id,
                     ':mazo_id' => $id_mazo,
-                    ':estado'  => 'en_mazo',
+                    ':estado' => 'en_mazo',
                 ]);
             }
-    
-            $pdo->commit(); //si no hubo erroes, se completa la transaccion y se suben todas las cartas
+
+            $pdo->commit();
+            $pdo = $this->database->closeConnection();
             return true;
         } catch (\PDOException $e) {
-            $pdo->rollBack(); //si hubo al menos un error, no se sube ninguna carta
+            $pdo->rollBack();
+            $pdo = $this->database->closeConnection();
             return false;
         }
     }
-    public function actualizarCartas(int $id_mazo, string $estado):bool
+    public function actualizarCartas(int $id_mazo, string $estado): bool
     {
         $pdo = $this->database->getConnection();
 
         $stmt = $pdo->prepare("UPDATE mazo_carta SET estado=:estado WHERE mazo_id=:id_mazo");
-        return $stmt->execute([
+        $success = $stmt->execute([
             ':id_mazo' => $id_mazo,
             ':estado' => $estado
         ]);
+
+        $pdo = $this->database->closeConnection();
+
+        return $success;
     }
 
-    public function buscarIdCartas(int $id_mazo):array
+    public function buscarIdCartas(int $id_mazo): array
     {
         $pdo = $this->database->getConnection();
         $stmt = $pdo->query("SELECT carta_id FROM mazo_carta WHERE mazo_id=$id_mazo");
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $pdo = $this->database->closeConnection();
         return $data;
     }
-    
+
     public function obtenerCartasEnMano(int $mazo_id): array
     {
         $pdo = $this->database->getConnection();
         $stmt = $pdo->prepare("SELECT carta_id FROM mazo_carta WHERE mazo_id = :mazo_id AND estado = 'en_mano'");
         $stmt->execute([':mazo_id' => $mazo_id]);
-        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $result = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $pdo = $this->database->closeConnection();
+        return $result;
     }
-    
 
-    public function descartarCarta(int $carta_id, int $mazo_id):void
+
+    public function descartarCarta(int $carta_id, int $mazo_id): void
     {
         $pdo = $this->database->getConnection();
 
@@ -71,6 +80,7 @@ class MazoCartaRepository
             ':mazo_id' => $mazo_id,
             ':carta_id' => $carta_id
         ]);
+        $pdo = $this->database->closeConnection();
     }
-    
+
 }

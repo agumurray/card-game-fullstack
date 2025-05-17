@@ -11,28 +11,36 @@ class PartidaRepository
     {
     }
 
-    public function crearPartida(int $id_usuario,int $id_mazo): int|false
+    public function crearPartida(int $id_usuario, int $id_mazo): int|false
     {
         $pdo = $this->database->getConnection();
 
         $stmt = $pdo->prepare("INSERT INTO partida(usuario_id,mazo_id,estado) VALUES (:id_usuario,:id_mazo,'en_curso')");
-        if( $stmt->execute([
-            ':id_usuario'=>$id_usuario,
-            ':id_mazo'=> $id_mazo
-        ])){
-            return (int) $pdo->lastInsertId();
+        if (
+            $stmt->execute([
+                ':id_usuario' => $id_usuario,
+                ':id_mazo' => $id_mazo
+            ])
+        ) {
+            $result = (int) $pdo->lastInsertId();
+            $pdo = $this->database->closeConnection();
+            return $result;
         }
+        $pdo = $this->database->closeConnection();
         return false;
     }
 
 
-    public function tienePartidaEnCurso(int $id_usuario):int|false
+    public function tienePartidaEnCurso(int $id_usuario): int|false
     {
         $pdo = $this->database->getConnection();
         $stmt = $pdo->prepare("SELECT id FROM partida WHERE usuario_id=$id_usuario AND estado = 'en_curso'");
-        if($stmt->execute()){
-            return $stmt->fetchColumn();
+        if ($stmt->execute()) {
+            $pdo = $this->database->closeConnection();
+            $result = $stmt->fetchColumn();
+            return $result;
         } else {
+            $pdo = $this->database->closeConnection();
             return false;
         }
     }
@@ -53,16 +61,18 @@ class PartidaRepository
 
         $count = $stmt->fetchColumn();
 
+        $pdo = $this->database->closeConnection();
         return $count > 0;
     }
 
-    public function mazoUtilizado(int $id_mazo):bool
+    public function mazoUtilizado(int $id_mazo): bool
     {
         $pdo = $this->database->getConnection();
 
         $stmt = $pdo->prepare("SELECT mazo_id FROM partida WHERE mazo_id = :id_mazo");
         $stmt->execute([':id_mazo' => $id_mazo]);
         $data = $stmt->fetchColumn();
+        $pdo = $this->database->closeConnection();
         return $data;
     }
 
@@ -72,8 +82,9 @@ class PartidaRepository
 
         $stmt = $pdo->prepare("SELECT mazo_id FROM partida WHERE id = :id_partida");
         $stmt->execute([':id_partida' => $id_partida]);
-
-        return $stmt->fetchColumn();
+        $result = $stmt->fetchColumn();
+        $pdo = $this->database->closeConnection();
+        return $result;
     }
 
     public function finalizarPartida(int $id_partida, string $resultado): void
@@ -85,15 +96,18 @@ class PartidaRepository
             'resultado' => $resultado,
             'id_partida' => $id_partida
         ]);
+        $pdo = $this->database->closeConnection();
     }
 
     public function obtenerPartidas(): array
     {
         $pdo = $this->database->getConnection();
 
-        $stmt= $pdo->prepare("SELECT usuario_id,el_usuario FROM partida WHERE estado='finalizada'");
+        $stmt = $pdo->prepare("SELECT usuario_id,el_usuario FROM partida WHERE estado='finalizada'");
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $pdo = $this->database->closeConnection();
+        return $result;
     }
 
 }

@@ -11,13 +11,14 @@ class JugadaRepository
     {
     }
 
-    public function contarJugadasEnPartida(int $id_partida):int
+    public function contarJugadasEnPartida(int $id_partida): int
     {
         $pdo = $this->database->getConnection();
 
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM jugada WHERE partida_id = :partida_id");
-        $stmt->execute([':partida_id'=>$id_partida]);
+        $stmt->execute([':partida_id' => $id_partida]);
 
+        $pdo = $this->database->closeConnection();
         return $stmt->fetchColumn();
     }
 
@@ -36,25 +37,28 @@ class JugadaRepository
             ':carta_servidor_id' => $id_carta_servidor,
             ':resultado' => $resultado
         ]);
+
+        $pdo = $this->database->closeConnection();
     }
 
-    function determinarGanador(int $id_partida): string {
+    function determinarGanador(int $id_partida): string
+    {
         $pdo = $this->database->getConnection();
 
         // Obtener los resultados de las jugadas
         $stmt = $pdo->prepare("SELECT el_usuario FROM jugada WHERE partida_id = :id_partida");
         $stmt->execute(['id_partida' => $id_partida]);
         $resultados = $stmt->fetchAll(PDO::FETCH_COLUMN);
-    
+
         if (empty($resultados)) {
             return 'sin jugadas';
         }
-    
+
         // Contar los resultados
         $ganadas = 0;
         $perdidas = 0;
         $empatadas = 0;
-    
+
         foreach ($resultados as $resultado) {
             switch ($resultado) {
                 case 'gano':
@@ -68,7 +72,7 @@ class JugadaRepository
                     break;
             }
         }
-    
+
         // Determinar resultado final
         if ($ganadas > $perdidas) {
             $resultadoFinal = 'gano';
@@ -77,9 +81,10 @@ class JugadaRepository
         } else {
             $resultadoFinal = 'empato';
         }
-    
+
+        $pdo = $this->database->closeConnection();
         return $resultadoFinal;
     }
-    
+
 
 }

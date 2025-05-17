@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace App;
 
 use PDO;
+use Psr\Log\NullLogger;
 
 class Database
 {
-    public function __construct(private string $host,
-                                private string $name,
-                                private string $user,
-                                private string $password)
-    {
+    public function __construct(
+        private string $host,
+        private string $name,
+        private string $user,
+        private string $password
+    ) {
     }
     public function getConnection(): PDO
     {
@@ -23,5 +25,10 @@ class Database
         ]);
 
         return $pdo;
+    }
+
+    public function closeConnection()
+    {
+        return null;
     }
 }

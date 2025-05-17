@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+
 use App\Controllers\AuthController;
 use App\Controllers\JuegoController;
 use App\Controllers\UsuarioController;
@@ -38,10 +40,7 @@ $errorHandler->forceContentType('application/json');
 $app->add(new CorsMiddleware());
 
 // Ruta simple para test
-$app->get('/', function (
-    ServerRequestInterface $request,
-    ResponseInterface $response
-): ResponseInterface {
+$app->get('/', function (ServerRequestInterface $request, ResponseInterface $response): ResponseInterface {
     $response->getBody()->write(json_encode(['message' => 'Hello, world!']));
     return $response->withHeader('Content-Type', 'application/json');
 });
@@ -52,11 +51,11 @@ $app->post('/registro', [AuthController::class, 'register'])
 $app->post('/login', [AuthController::class, 'login']);
 
 // Usuario
-$app->put('/usuario/{usuario}', [UsuarioController::class, 'actualizar'])
+$app->put('/usuarios/{usuario}', [UsuarioController::class, 'actualizar'])
     ->add(AuthMiddleware::class)
     ->add(ClaveMiddleware::class);
 
-$app->get('/usuario/{usuario}',[UsuarioController::class,'obtener'])
+$app->get('/usuarios/{usuario}', [UsuarioController::class, 'obtener'])
     ->add(AuthMiddleware::class);
 
 //Mazo
@@ -68,14 +67,14 @@ $app->get('/usuarios/{usuario}/mazos', [MazoController::class, 'mostrarMazos'])
 
 $app->get('/cartas', [MazoController::class, 'buscarCartasFiltro']);
 
-$app->put('/mazos/{mazo}',[MazoController::class,'actualizarMazo'])
+$app->put('/mazos/{mazo}', [MazoController::class, 'actualizarMazo'])
     ->add(AuthMiddleware::class);
-    
-$app->delete('/mazos/{mazo}',[MazoController::class,'eliminarMazo'])
+
+$app->delete('/mazos/{mazo}', [MazoController::class, 'eliminarMazo'])
     ->add(AuthMiddleware::class);
 
 //Juego
-$app->post('/partida', [JuegoController::class, 'crearPartida'])
+$app->post('/partidas', [JuegoController::class, 'crearPartida'])
     ->add(AuthMiddleware::class);
 
 $app->post('/jugadas', [JuegoController::class, 'crearJugada'])
@@ -84,10 +83,10 @@ $app->post('/jugadas', [JuegoController::class, 'crearJugada'])
 $app->get('/usuarios/{usuario}/partidas/{partida}/cartas', [JuegoController::class, 'cartasEnJuego'])
     ->add(AuthMiddleware::class);
 
-$app->get('/estadisticas',[JuegoController::class, 'estadisticas']);
+$app->get('/estadisticas', [JuegoController::class, 'estadisticas']);
 
 $app->get('/ping', function ($request, $response, $args) {
-    $response->getBody()->write(json_encode(["pong" => true]));
+    $response->getBody()->write(json_encode(["Hola soy el endpoint /ping"]));
     return $response->withHeader('Content-Type', 'application/json');
 });
 

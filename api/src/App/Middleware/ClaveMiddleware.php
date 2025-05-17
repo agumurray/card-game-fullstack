@@ -14,16 +14,17 @@ class ClaveMiddleware
         $data = $request->getParsedBody();
         $clave = $data['clave'] ?? null;
 
-        // Validación de la contraseña
-        if (!empty($clave) && (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $clave))) {
-            return $this->withJson(['error' => 'La contraseña debe tener al menos 8 caracteres, mayúscula, minúscula, al menos un número y un carácter especial'], 400);
+        if (empty($clave)) {
+            return $this->withJson(['error' => 'La contraseña es obligatoria'], 400);
         }
 
-        // Si la contraseña es válida, pasa al siguiente middleware o controlador
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $clave)) {
+            return $this->withJson(['error' => 'La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula, un número y un carácter especial'], 400);
+        }
+
         return $handler->handle($request);
     }
 
-    // Método para devolver la respuesta JSON con un error
     private function withJson(array $data, int $status): Response
     {
         $response = new SlimResponse();

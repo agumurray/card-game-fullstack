@@ -38,7 +38,7 @@ class UsuarioRepository
         $pdo = $this->database->getConnection();
         $stmt = $pdo->prepare("SELECT * FROM usuario WHERE usuario = :usuario");
         $stmt->execute([':usuario' => $usuario]);
-    
+
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
         return $resultado !== false ? $resultado : null;
     }
@@ -47,9 +47,9 @@ class UsuarioRepository
     {
         $pdo = $this->database->getConnection();
         //uso query porque ejecuta una consulta simple
-        $stmt=$pdo->query("SELECT id,nombre,usuario FROM usuario WHERE id = $usuario");
-        $usuario=$stmt->fetch(PDO::FETCH_ASSOC);
-        
+        $stmt = $pdo->query("SELECT id,nombre,usuario FROM usuario WHERE id = $usuario");
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
         return $usuario ?: null;
     }
 
@@ -59,26 +59,46 @@ class UsuarioRepository
         $stmt = $pdo->prepare("SELECT id FROM usuario WHERE token = :token");
         $stmt->execute([':token' => $token]);
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-        return $resultado ? (int)$resultado['id'] : false;
+
+        return $resultado ? (int) $resultado['id'] : false;
     }
-    
+
 
     public function guardarToken(int $id, string $token, int $exp): void
     {
+        date_default_timezone_set('America/Argentina/Buenos_Aires');
+
+        $expDatetime = date('Y-m-d H:i:s', $exp);
+
         $pdo = $this->database->getConnection();
-        $stmt = $pdo->prepare("UPDATE usuario SET token = :token, vencimiento_token = FROM_UNIXTIME(:exp) WHERE id = :id");
-        $stmt->execute([':token' => $token, ':exp' => $exp, ':id' => $id]);
+        $stmt = $pdo->prepare("
+        UPDATE usuario 
+        SET token = :token, 
+            vencimiento_token = :exp 
+        WHERE id = :id
+    ");
+        $stmt->execute([
+            ':token' => $token,
+            ':exp' => $expDatetime,
+            ':id' => $id
+        ]);
+        $pdo = $this->database->closeConnection();
     }
 
+
     public function tokenValido(int $id, string $token): bool
-    {   
+    {
+        date_default_timezone_set('America/Argentina/Buenos_Aires');
+        
         $pdo = $this->database->getConnection();
         $stmt = $pdo->prepare("SELECT token, vencimiento_token FROM usuario WHERE id = :id");
         $stmt->execute([':id' => $id]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $pdo = $this->database->closeConnection();
 
-        return $user && $user['token'] === $token && time() < strtotime($user['vencimiento_token']);
+        return $user &&
+            $user['token'] === $token &&
+            time() < strtotime($user['vencimiento_token']);
     }
 
     public function actualizarUsuario(int $id, string $nombre, string $clave): bool
@@ -86,6 +106,8 @@ class UsuarioRepository
         $pdo = $this->database->getConnection();
         $claveHash = password_hash($clave, PASSWORD_DEFAULT);
         $stmt = $pdo->prepare("UPDATE usuario SET nombre = :nombre, password = :clave WHERE id = :id");
-        return $stmt->execute([':nombre' => $nombre, ':clave' => $claveHash, ':id' => $id]);
+        $result = $stmt->execute([':nombre' => $nombre, ':clave' => $claveHash, ':id' => $id]);
+        $pdo = $this->database->closeConnection();
+        return $result;
     }
 }

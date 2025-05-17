@@ -15,7 +15,7 @@ class UsuarioController
 
     public function actualizar(Request $request, Response $response, array $args): Response
     {
-        $id_usuario =(int) $args['usuario'];
+        $id_usuario = (int) $args['usuario'];
         $data = json_decode($request->getBody()->getContents(), true);
         $nombre = $data['nombre'] ?? '';
 
@@ -32,12 +32,12 @@ class UsuarioController
         return $this->withJson($response, ['error' => 'No se pudo actualizar el usuario'], 400);
     }
 
-    public function obtener(Request $request, Response $response, array $args):Response
+    public function obtener(Request $request, Response $response, array $args): Response
     {
-        $id_usuario=$args['usuario'];
+        $id_usuario = $args['usuario'];
         //busco usuario
-        $usuario=$this->repo->buscarPorId($id_usuario);
-        return $this->withJson($response,['usuario'=>$usuario]);
+        $usuario = $this->repo->buscarPorId($id_usuario);
+        return $this->withJson($response, ['usuario' => $usuario]);
     }
 
     private function withJson(Response $response, array $data, int $status = 200): Response

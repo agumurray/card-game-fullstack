@@ -23,31 +23,36 @@ class CartaRepository
         if ($cantidad != count($cartas)) {
             return false;
         }
+
+        $pdo = $this->database->closeConnection();
         return true;
     }
 
-    public function mostrarCartas(array $cartas):array
+    public function mostrarCartas(array $cartas): array
     {
         $pdo = $this->database->getConnection();
-        $i=0;
-        foreach ($cartas as $key=>$value){
-            $id_cartas[$i]=(int)$value['carta_id'];
-            $i = $i+1;
+        $i = 0;
+        foreach ($cartas as $key => $value) {
+            $id_cartas[$i] = (int) $value['carta_id'];
+            $i = $i + 1;
         }
-            $stmt = $pdo->query("SELECT id,nombre,ataque_nombre,ataque FROM carta WHERE id IN (". implode(',',$id_cartas).")");
-            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $pdo->query("SELECT id,nombre,ataque_nombre,ataque FROM carta WHERE id IN (" . implode(',', $id_cartas) . ")");
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $pdo = $this->database->closeConnection();
         return $data;
     }
-    
+
     public function obtenerFuerza(int $id_carta): int
     {
         $pdo = $this->database->getConnection();
-    
+
         $stmt = $pdo->prepare("SELECT ataque FROM carta WHERE id = :id_carta");
         $stmt->execute([':id_carta' => $id_carta]);
-    
+
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
+        $pdo = $this->database->closeConnection();
         return $resultado['ataque'] ?? 0;
     }
 
@@ -60,29 +65,41 @@ class CartaRepository
 
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        $pdo = $this->database->closeConnection();
         return $resultado['atributo_id'] ?? 0;
     }
 
-    public function buscarCartasPorAtributoYNombre(int $atributo, string $nombre): array
+    public function buscarCartasPorAtributoYNombre(?int $atributo, string $nombre): array
     {
         $pdo = $this->database->getConnection();
-    
-        $select = "SELECT id, nombre, ataque, ataque_nombre, atributo_id FROM carta";
-    
-        if (empty($nombre)) {
-            $stmt = $pdo->prepare("$select WHERE atributo_id = :atributo");
-            $stmt->bindValue(':atributo', $atributo);
-        } else {
-            $stmt = $pdo->prepare("$select WHERE atributo_id = :atributo AND LOWER(nombre) LIKE LOWER(:nombre)");
-            $stmt->bindValue(':atributo', $atributo);
-            $stmt->bindValue(':nombre', "%$nombre%");
+
+        $sql = "SELECT id, nombre, ataque, ataque_nombre, atributo_id FROM carta";
+        $condiciones = [];
+        $params = [];
+
+        if (!empty($atributo)) {
+            $condiciones[] = "atributo_id = :atributo";
+            $params[':atributo'] = $atributo;
         }
-    
-        $stmt->execute();
+
+        if (!empty($nombre)) {
+            $condiciones[] = "LOWER(nombre) LIKE LOWER(:nombre)";
+            $params[':nombre'] = "%$nombre%";
+        }
+
+        if (!empty($condiciones)) {
+            $sql .= " WHERE " . implode(" AND ", $condiciones);
+        }
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        $pdo = $this->database->closeConnection();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function obtenerAtributosUnicosDeCartas(array $cartaIds): array
+
+    public function obtenerAtributosDeCartas(array $cartaIds): array
     {
 
         if (empty($cartaIds)) {
@@ -90,15 +107,16 @@ class CartaRepository
         }
 
         $placeholders = implode(',', array_fill(0, count($cartaIds), '?'));
-        $query = "SELECT DISTINCT atributo_id FROM carta WHERE id IN ($placeholders)";
+        $query = "SELECT atributo_id FROM carta WHERE id IN ($placeholders)";
 
         $pdo = $this->database->getConnection();
         $stmt = $pdo->prepare($query);
         $stmt->execute($cartaIds);
 
+        $pdo = $this->database->closeConnection();
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    
-    
+
+
 }

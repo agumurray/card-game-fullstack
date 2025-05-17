@@ -1,4 +1,4 @@
-#version: "3.8"
+version: "3.8"
 
 services:
   composer:
@@ -7,7 +7,7 @@ services:
       - ./api:/app
     working_dir: /app
     command: >
-      bash -c "([ ! -f composer.json ] && composer require slim/slim:'4.*' slim/psr7) || ([ ! -d vendor ] && composer install) || exit 0"
+      bash -c "composer install && composer dump-autoload"
 
   app:
     build: ./api
@@ -57,14 +57,13 @@ services:
       - app-network
 
   frontend:
-    image: node:20-alpine
-    working_dir: /app
-    command: sh -c "npm install && npm run dev -- --host"
+    build:
+      context: ./pokebattle
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     volumes:
       - ./pokebattle:/app
-      - /app/node_modules
     networks:
       - app-network
     env_file:

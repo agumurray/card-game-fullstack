@@ -1,4 +1,4 @@
-version: "3.8"
+#version: "3.8"
 
 services:
   composer:
@@ -63,7 +63,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./pokebattle:/app
+      - ./pokebattle:/app:cached
+      - /app/node_modules # Excluye node_modules del host, lo mantiene interno al contenedor
     networks:
       - app-network
     env_file:

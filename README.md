@@ -2,6 +2,8 @@
 
 Un proyecto completo de un juego de cartas en línea, que incluye una API RESTful construida con PHP (Slim Framework) y un frontend interactivo desarrollado en React.
 
+---
+
 ## Requisito Previo
 
 Asegúrate de tener instalado y configurado el siguiente componente en tu sistema:
@@ -13,11 +15,11 @@ Asegúrate de tener instalado y configurado el siguiente componente en tu sistem
 ## Configuración Inicial
 
 1. Clona el repositorio:
-
+ 
 ```bash
 git clone https://github.com/agumurray/card-game-php.git
 cd card-game-php
-```
+````
 
 2. Copia el archivo de entorno de ejemplo:
 
@@ -43,7 +45,12 @@ Esto asegurará que se instalen todas las dependencias tanto del backend como de
 * El frontend estará disponible en: [http://localhost:3000](http://localhost:3000)
 * La base de datos se puede visualizar mediante phpMyAdmin en: [http://localhost:8081](http://localhost:8081)
 
-> ⚠️ **Importante:** Si se agregan nuevas dependencias o se actualiza `composer.json` o `package.json`, asegúrate de ejecutar `docker-compose up -d --build` nuevamente.
+> ⚠️ **Importante:** Si se agregan nuevas dependencias o se actualiza `composer.json`, `package.json` o `package-lock.json`, asegurate de reconstruir la imagen afectada con:
+
+```bash
+docker-compose build frontend   # o `app` para el backend
+docker-compose up -d
+```
 
 ---
 
@@ -63,25 +70,23 @@ docker-compose down -v
 
 ## Esquema de Base de Datos
 
-El archivo [`init.sql`](init.sql) contiene el esquema de base de datos provisto en la práctica.
+El archivo [`init.sql`](api/init.sql) contiene el esquema de base de datos provisto en la práctica.
 
 ---
 
-## Dependencias (composer.json / package.json)
+## Dependencias
 
-Estas son las bibliotecas requeridas por la aplicación y su propósito:
+### Backend (PHP - Slim)
 
-### Backend (PHP):
+* **`slim/slim`**: Framework minimalista para APIs REST.
+* **`slim/psr7`**: Implementación de PSR-7 para manejar solicitudes HTTP.
+* **`php-di/php-di`**: Inyección de dependencias.
+* **`firebase/php-jwt`**: Manejo de autenticación con JSON Web Tokens.
 
-* **`slim/slim` (^4.14)**: Framework minimalista para construir aplicaciones web y APIs REST con PHP.
-* **`slim/psr7` (^1.7)**: Implementación de PSR-7 (HTTP messages) para manejar solicitudes y respuestas en Slim.
-* **`php-di/php-di` (^7.0)**: Contenedor de inyección de dependencias para facilitar la gestión de objetos y servicios.
-* **`firebase/php-jwt` (^6.11)**: Biblioteca para crear y verificar JSON Web Tokens (JWT), útil para autenticación y autorización.
+### Frontend (React)
 
-### Frontend (React):
-
-* **`axios`**: Cliente HTTP para realizar peticiones a la API.
-* **`react-bootstrap`**: Componentes de UI basados en Bootstrap.
-* **`bootstrap`**: Framework CSS para estilos y diseño responsivo.
+* **`axios`**: Cliente HTTP.
+* **`react-bootstrap`**: Componentes visuales basados en Bootstrap.
+* **`bootstrap`**: Framework de estilos CSS.
 
 ---

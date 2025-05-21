@@ -73,16 +73,17 @@ class MazoController
     public function buscarCartasFiltro(Request $request, Response $response): Response
     {
         $params = $request->getQueryParams();
-        $atributo = (int) ($params['atributo'] ?? null);
+        $atributoRaw = $params['atributo'] ?? null;
         $nombre = $params['nombre'] ?? '';
 
-        if ($atributo !== null && !ctype_digit((string) $atributo)) {
+        if ($atributoRaw !== null && !ctype_digit($atributoRaw)) {
             return $this->withJson($response, [
-                'error' => 'El parámetro "atributo" debe ser un número entero.'
+                'error' => 'El parámetro atributo debe ser un número entero.'
             ], 400);
         }
 
-        $atributo = $atributo !== null ? (int) $atributo : null;
+
+        $atributo = $atributoRaw !== null ? (int) $atributoRaw : null;
 
         $cartas = $this->repo_cartas->buscarCartasPorAtributoYNombre($atributo, $nombre);
 

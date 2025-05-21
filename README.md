@@ -44,6 +44,7 @@ Esto asegurará que se instalen todas las dependencias tanto del backend como de
 * La API estará disponible en: [http://localhost:8080](http://localhost:8080)
 * El frontend estará disponible en: [http://localhost:3000](http://localhost:3000)
 * La base de datos se puede visualizar mediante phpMyAdmin en: [http://localhost:8081](http://localhost:8081)
+* Podés usar esta [colección de Postman](https://agustin-7610866.postman.co/workspace/Agustin's-Workspace~410d3a08-beda-4a71-8e6a-fc78d13e900c/collection/43658514-79d729d0-10a9-429b-83d5-e2097f882833?action=share&creator=43658514&active-environment=43658514-925d8b7a-8a96-4b2e-a068-d062fdada82e) para probar fácilmente los endpoints disponibles (registro, login, partidas, jugadas, etc.).
 
 > ⚠️ **Importante:** Si se agregan nuevas dependencias o se actualiza `composer.json`, `package.json` o `package-lock.json`, asegurate de reconstruir la imagen afectada con:
 

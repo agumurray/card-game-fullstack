@@ -17,18 +17,15 @@ class AuthMiddleware implements MiddlewareInterface
 
     public function process(Request $request, Handler $handler): Response
     {
-
-        // Intentar obtener el ID de usuario desde la ruta (prioridad)
         $routeContext = RouteContext::fromRequest($request);
         $route = $routeContext->getRoute();
         $routeArgs = $route?->getArguments() ?? [];
         $id_usuario = $routeArgs['usuario'] ?? null;
 
-        // Obtener método y patrón de ruta
         $method = $request->getMethod();
         $pattern = $route?->getPattern();
 
-        // Excepción: permitir acceso sin token solo a este endpoint y si el usuario es 1
+
         if (
             $method === 'GET' &&
             $pattern === '/usuarios/{usuario}/partidas/{partida}/cartas' &&
@@ -37,13 +34,11 @@ class AuthMiddleware implements MiddlewareInterface
             return $handler->handle($request->withAttribute('id_usuario', 1));
         }
 
-        // Si no se encuentra en la ruta, intentar obtenerlo del cuerpo (JSON)
         if (empty($id_usuario)) {
             $data = $request->getParsedBody();
             $id_usuario = $data['usuario'] ?? null;
         }
 
-        // Si aún no se encuentra, intentar obtenerlo del token
         if (empty($id_usuario)) {
             $authHeader = $request->getHeaderLine('Authorization');
             $token = null;
@@ -58,7 +53,6 @@ class AuthMiddleware implements MiddlewareInterface
             }
         }
 
-        // Si no se encuentra el ID de usuario, devolver error
         if (empty($id_usuario)) {
             return $this->withJson([
                 'status' => 'error',
@@ -66,7 +60,6 @@ class AuthMiddleware implements MiddlewareInterface
             ], 400);
         }
 
-        // Si el token está presente y el ID de usuario no coincide o el token no es válido, devolver error
         $authHeader = $request->getHeaderLine('Authorization');
         $token = null;
         if (!empty($authHeader) && preg_match('/Bearer\s+(.*)$/i', $authHeader, $matches)) {
@@ -80,7 +73,6 @@ class AuthMiddleware implements MiddlewareInterface
             ], 401);
         }
 
-        // Pasar id_usuario como atributo a la solicitud
         $request = $request->withAttribute('id_usuario', $id_usuario);
         return $handler->handle($request);
     }

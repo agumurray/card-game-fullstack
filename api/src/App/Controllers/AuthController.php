@@ -21,7 +21,6 @@ class AuthController
         $data = $request->getParsedBody();
         $nombre = $data['nombre'] ?? null;
         $usuario = $data['usuario'] ?? null;
-        $clave = $data['clave'] ?? null;
 
         if (empty($nombre) || empty($usuario)) {
             return $this->withJson($response, ['error' => 'Todos los campos son obligatorios'], 400);

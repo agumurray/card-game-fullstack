@@ -105,7 +105,6 @@ class JuegoController
 
         $this->repo_jugada->subirJugada($id_partida, $id_carta_usuario, $id_carta_servidor, $resultado);
 
-        // Si es la quinta jugada, se finaliza la partida y se devuelve info extra
         if ($cantidad_jugadas + 1 == 5) {
 
             $resultado_final = $this->repo_jugada->determinarGanador($id_partida);
@@ -124,7 +123,7 @@ class JuegoController
             ]);
         }
 
-        // Caso normal (jugadas 1 a 4)
+
         return $this->withJson($response, [
             'status' => 'success',
             'carta servidor' => $id_carta_servidor,
@@ -154,7 +153,6 @@ class JuegoController
             return $this->withJson($response, ['atributos en mano (servidor): ' => $atributos_enMano], 200);
         }
 
-        // Consulta segura
         if (!$this->repo_partida->verificarPartidaEnCursoDeUsuario($partida_id, $usuario_id)) {
             return $this->withJson($response, ['error' => 'La partida no pertenece al usuario o la misma ya finalizo'], 400);
         }
@@ -165,7 +163,6 @@ class JuegoController
 
         $atributo_ids = $this->repo_carta->obtenerAtributosDeCartas($cartas_id);
         $atributos_enMano = $this->repo_atributo->obtenerAtributosPorIds($atributo_ids);
-        //retorno atributos
         return $this->withJson($response, ['atributos en mano: ' => $atributos_enMano], 200);
 
 

@@ -36,21 +36,17 @@ $errorMiddleware = $app->addErrorMiddleware(true, true, true);
 $errorHandler = $errorMiddleware->getDefaultErrorHandler();
 $errorHandler->forceContentType('application/json');
 
-// Middleware CORS
 $app->add(new CorsMiddleware());
 
-// Ruta simple para test
 $app->get('/', function (ServerRequestInterface $request, ResponseInterface $response): ResponseInterface {
     $response->getBody()->write(json_encode(['message' => 'Hello, world!']));
     return $response->withHeader('Content-Type', 'application/json');
 });
 
-// Autenticación
 $app->post('/registro', [AuthController::class, 'register'])
     ->add(ClaveMiddleware::class);
 $app->post('/login', [AuthController::class, 'login']);
 
-// Usuario
 $app->put('/usuarios/{usuario}', [UsuarioController::class, 'actualizar'])
     ->add(AuthMiddleware::class)
     ->add(ClaveMiddleware::class);
@@ -58,7 +54,6 @@ $app->put('/usuarios/{usuario}', [UsuarioController::class, 'actualizar'])
 $app->get('/usuarios/{usuario}', [UsuarioController::class, 'obtener'])
     ->add(AuthMiddleware::class);
 
-//Mazo
 $app->post('/mazos', [MazoController::class, 'agregar'])
     ->add(AuthMiddleware::class);
 
@@ -72,8 +67,7 @@ $app->put('/mazos/{mazo}', [MazoController::class, 'actualizarMazo'])
 
 $app->delete('/mazos/{mazo}', [MazoController::class, 'eliminarMazo'])
     ->add(AuthMiddleware::class);
-
-//Juego
+    
 $app->post('/partidas', [JuegoController::class, 'crearPartida'])
     ->add(AuthMiddleware::class);
 

@@ -45,7 +45,6 @@ class JugadaRepository
     {
         $pdo = $this->database->getConnection();
 
-        // Obtener los resultados de las jugadas
         $stmt = $pdo->prepare("SELECT el_usuario FROM jugada WHERE partida_id = :id_partida");
         $stmt->execute(['id_partida' => $id_partida]);
         $resultados = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -54,7 +53,6 @@ class JugadaRepository
             return 'sin jugadas';
         }
 
-        // Contar los resultados
         $ganadas = 0;
         $perdidas = 0;
         $empatadas = 0;
@@ -73,7 +71,6 @@ class JugadaRepository
             }
         }
 
-        // Determinar resultado final
         if ($ganadas > $perdidas) {
             $resultadoFinal = 'gano';
         } elseif ($perdidas > $ganadas) {

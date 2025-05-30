@@ -79,9 +79,10 @@ $app->get('/usuarios/{usuario}/partidas/{partida}/cartas', [JuegoController::cla
 
 $app->get('/estadisticas', [JuegoController::class, 'estadisticas']);
 
-$app->get('/ping', function ($request, $response, $args) {
-    $response->getBody()->write(json_encode(["Hola soy el endpoint /ping"]));
-    return $response->withHeader('Content-Type', 'application/json');
-});
+$app->get('/yo', [AuthController::class, 'verificar'])
+    ->add(AuthMiddleware::class);
+
+$app->post('/logout', [AuthController::class, 'logout'])
+    ->add(AuthMiddleware::class);
 
 $app->run();

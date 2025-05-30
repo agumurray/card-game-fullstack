@@ -82,7 +82,6 @@ El archivo [`init.sql`](api/init.sql) contiene el esquema de base de datos provi
 * **`slim/slim`**: Framework minimalista para APIs REST.
 * **`slim/psr7`**: Implementación de PSR-7 para manejar solicitudes HTTP.
 * **`php-di/php-di`**: Inyección de dependencias.
-* **`firebase/php-jwt`**: Manejo de autenticación con JSON Web Tokens.
 
 ### Frontend (React)
 

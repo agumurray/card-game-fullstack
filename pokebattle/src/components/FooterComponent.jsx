@@ -1,6 +1,6 @@
 import '@/styles/footer.css';
 
-const FooterComponente = () => {
+const FooterComponent = () => {
     return (
         <footer className="footer">
             <p>&copy; {new Date().getFullYear()} Pokebattle – Facultad de Informática, UNLP.</p>
@@ -8,4 +8,4 @@ const FooterComponente = () => {
     );
 };
 
-export default FooterComponente;
+export default FooterComponent;

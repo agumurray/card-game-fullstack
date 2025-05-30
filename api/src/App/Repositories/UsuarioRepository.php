@@ -93,6 +93,16 @@ class UsuarioRepository
     }
 
 
+    public function borrarToken(int $id_usuario): void
+    {
+        $pdo = $this->database->getConnection();
+        $stmt = $pdo->prepare("UPDATE usuario SET token = NULL, vencimiento_token = NULL WHERE id = :id");
+        $stmt->bindValue(':id', $id_usuario, PDO::PARAM_INT);
+        $stmt->execute();
+        $pdo = $this->database->getConnection();
+    }
+
+
     public function tokenValido(int $id, string $token): bool
     {
         date_default_timezone_set('America/Argentina/Buenos_Aires');

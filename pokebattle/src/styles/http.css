@@ -1,0 +1,12 @@
+.http-container {
+  padding: 2rem;
+  font-family: monospace;
+}
+
+.json-example {
+  background: #f5f5f5;
+  padding: 1rem;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  margin-bottom: 1rem;
+}

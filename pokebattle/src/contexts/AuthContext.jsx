@@ -1,8 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import {
-  getUserData,
-  logoutUser,
-} from "@/services/apiService"; 
+import { getUserData, logoutUser } from "@/services/apiService";
 
 const AuthContext = createContext();
 

@@ -1,4 +1,4 @@
-import { api } from "../api/api"; 
+import { api } from "../api/api";
 
 export const loginUser = (data) => api.post("/login", data);
 

@@ -63,7 +63,11 @@ const LoginPage = () => {
       </form>
 
       {mensaje && (
-        <div className={`alert mt-3 alert-${mensaje.tipo === "success" ? "success" : "danger"}`}>
+        <div
+          className={`alert mt-3 alert-${
+            mensaje.tipo === "success" ? "success" : "danger"
+          }`}
+        >
           {mensaje.texto}
         </div>
       )}

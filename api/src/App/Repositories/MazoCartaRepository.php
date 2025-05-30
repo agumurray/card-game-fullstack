@@ -14,7 +14,7 @@ class MazoCartaRepository
     public function crearMazo(array $cartas, int $id_mazo): bool
     {
         $pdo = $this->database->getConnection();
-        $pdo->beginTransaction(); 
+        $pdo->beginTransaction();
 
         try {
             $stmt = $pdo->prepare("INSERT INTO mazo_carta (carta_id, mazo_id, estado) VALUES (:carta_id, :mazo_id, :estado)");

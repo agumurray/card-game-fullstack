@@ -45,7 +45,14 @@ $app->get('/', function (ServerRequestInterface $request, ResponseInterface $res
 
 $app->post('/registro', [AuthController::class, 'register'])
     ->add(ClaveMiddleware::class);
+
 $app->post('/login', [AuthController::class, 'login']);
+
+$app->post('/logout', [AuthController::class, 'logout'])
+    ->add(AuthMiddleware::class);
+
+$app->get('/yo', [AuthController::class, 'verificar'])
+    ->add(AuthMiddleware::class);
 
 $app->put('/usuarios/{usuario}', [UsuarioController::class, 'actualizar'])
     ->add(AuthMiddleware::class)
@@ -67,7 +74,7 @@ $app->put('/mazos/{mazo}', [MazoController::class, 'actualizarMazo'])
 
 $app->delete('/mazos/{mazo}', [MazoController::class, 'eliminarMazo'])
     ->add(AuthMiddleware::class);
-    
+
 $app->post('/partidas', [JuegoController::class, 'crearPartida'])
     ->add(AuthMiddleware::class);
 
@@ -79,10 +86,5 @@ $app->get('/usuarios/{usuario}/partidas/{partida}/cartas', [JuegoController::cla
 
 $app->get('/estadisticas', [JuegoController::class, 'estadisticas']);
 
-$app->get('/yo', [AuthController::class, 'verificar'])
-    ->add(AuthMiddleware::class);
-
-$app->post('/logout', [AuthController::class, 'logout'])
-    ->add(AuthMiddleware::class);
 
 $app->run();

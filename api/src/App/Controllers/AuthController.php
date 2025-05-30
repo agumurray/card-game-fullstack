@@ -55,15 +55,15 @@ class AuthController
         }
 
         $exp = time() + 3600;
-        $token = bin2hex(random_bytes(64)); 
-        $token = substr($token, 0, 128); 
+        $token = bin2hex(random_bytes(64));
+        $token = substr($token, 0, 128);
 
         $this->repo->guardarToken($usuario['id'], $token, $exp);
 
         return $this->withJson($response, [
-                'status' => 'success',
-                'token' => $token
-            ]);
+            'status' => 'success',
+            'token' => $token
+        ]);
     }
 
     public function verificar(Request $request, Response $response): Response
@@ -77,16 +77,16 @@ class AuthController
         }
 
         return $this->withJson($response, [
-                'status' => 'success',
-                'usuario' => $usuario
-            ]);
+            'status' => 'success',
+            'usuario' => $usuario
+        ]);
     }
 
-    public function logout(Request $request, Response $response): Response 
+    public function logout(Request $request, Response $response): Response
     {
         $id_usuario = $request->getAttribute('id_usuario');
 
-        if(!$id_usuario) {
+        if (!$id_usuario) {
             return $this->withJson($response, ['status' => 'error', 'message' => 'Usuario no autenticado'], 401);
         }
 

@@ -29,7 +29,11 @@ const NavBar = () => {
         <div className={`collapse navbar-collapse ${isOpen ? "show" : ""}`}>
           <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex gap-3">
             <li className="nav-item">
-              <Link className="nav-link" to="/stat" onClick={() => setIsOpen(false)}>
+              <Link
+                className="nav-link"
+                to="/stat"
+                onClick={() => setIsOpen(false)}
+              >
                 Estadísticas
               </Link>
             </li>
@@ -50,7 +54,9 @@ const NavBar = () => {
             ) : (
               <>
                 <li className="nav-item">
-                  <span className="nav-link disabled">Hola, {usuario.nombre}</span>
+                  <span className="nav-link disabled">
+                    Hola, {usuario.nombre}
+                  </span>
                 </li>
                 <li className="nav-item">
                   <Link className="nav-link" to="/mis-mazos">

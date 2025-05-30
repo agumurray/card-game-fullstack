@@ -2,18 +2,16 @@
 
 namespace App\Controllers;
 
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Repositories\UsuarioRepository;
-use Firebase\JWT\JWT;
-
 class AuthController
 {
     private $secretKey;
 
     public function __construct(private UsuarioRepository $repo)
     {
-        $this->secretKey = getenv('JWT_SECRET');
     }
 
     public function register(Request $request, Response $response): Response
@@ -56,24 +54,47 @@ class AuthController
             return $this->withJson($response, ['status' => 'error', 'message' => 'Credenciales inválidas'], 401);
         }
 
-        $iat = time();
-        $exp = $iat + 3600;
+        $exp = time() + 3600;
+        $token = bin2hex(random_bytes(64)); 
+        $token = substr($token, 0, 128); 
 
-        $payload = [
-            'sub' => $usuario['id'],
-            'name' => $usuario['nombre'],
-            'iat' => time(),
-            'exp' => $exp,
-        ];
+        $this->repo->guardarToken($usuario['id'], $token, $exp);
 
-        $token = JWT::encode($payload, $this->secretKey, 'HS256');
-        $token = substr($token, 0, 128);
+        return $this->withJson($response, [
+                'status' => 'success',
+                'token' => $token
+            ]);
+    }
 
-        $this->repo->guardarToken($usuario['id'], $token, $payload['exp']);
+    public function verificar(Request $request, Response $response): Response
+    {
+        $id_usuario = $request->getAttribute('id_usuario');
+
+        $usuario = $this->repo->buscarPorId($id_usuario);
+
+        if (!$usuario) {
+            return $this->withJson($response, ['status' => 'error', 'message' => 'Usuario no encontrado'], 404);
+        }
+
+        return $this->withJson($response, [
+                'status' => 'success',
+                'usuario' => $usuario
+            ]);
+    }
+
+    public function logout(Request $request, Response $response): Response 
+    {
+        $id_usuario = $request->getAttribute('id_usuario');
+
+        if(!$id_usuario) {
+            return $this->withJson($response, ['status' => 'error', 'message' => 'Usuario no autenticado'], 401);
+        }
+
+        $this->repo->borrarToken($id_usuario);
 
         return $this->withJson($response, [
             'status' => 'success',
-            'token' => $token
+            'message' => 'Sesion cerrada correctamente'
         ]);
     }
 

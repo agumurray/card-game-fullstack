@@ -1,0 +1,6 @@
+.top-performer {
+  background-color: #ffeaa7;
+  border-left: 5px solid #e17055;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(255, 200, 0, 0.4);
+}

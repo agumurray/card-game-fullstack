@@ -16,7 +16,7 @@ const LoginPage = () => {
       const res = await loginUser({ usuario, clave });
       await login(res.data.token);
       setMensaje({ tipo: "success", texto: "Login exitoso" });
-      navigate("/"); // redirige a donde quieras
+      navigate("/"); 
     } catch (err) {
       setMensaje({
         tipo: "error",
@@ -26,8 +26,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: "400px" }}>
-      <h2>🔐 Login</h2>
+    <div className="container mt-5" style={{ maxWidth: "500px" }}>
+      <h2>Login</h2>
       <form onSubmit={handleLogin} className="login-form">
         <div className="mb-3">
           <label htmlFor="usuario" className="form-label">

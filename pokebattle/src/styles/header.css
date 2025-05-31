@@ -1,6 +1,14 @@
 .header {
   background-color: #cc0000;
   padding: 1rem;
-  color: white;
+  color: #F8F8F8;
   text-align: center;
+}
+
+.header-link {
+  text-decoration: none;
+  color: inherit;
+}
+.header-link:hover {
+  opacity: 0.8;
 }

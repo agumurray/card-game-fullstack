@@ -2,6 +2,7 @@ html,
 body {
   height: 100%;
   margin: 0;
+  padding: 0;
 }
 
 #root {
@@ -12,5 +13,5 @@ body {
 
 .main {
   flex: 1;
-  padding: 1rem;
+  padding: 0; 
 }

@@ -5,7 +5,7 @@ const pokemons = Array.from({ length: 40 }, (_, i) => i + 1);
 const HomePage = () => {
   return (
     <div className="text-center">
-      <div className="py-5 bg-light">
+      <div className="py-5 custom-hero">
         <h1 className="mb-3">¡Bienvenido a Pokebattle!</h1>
         <p className="text-muted">
           Explorá las estadísticas, iniciá sesión o registrate para comenzar.

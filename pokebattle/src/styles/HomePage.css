@@ -1,8 +1,14 @@
+.custom-hero {
+  background-color: #F8F8F8;
+  color: #1D1D1D;
+}
+
 .slider-container {
   overflow: hidden;
   white-space: nowrap;
-  width: 100%;
-  margin:100px 0;
+  width: 100vw;
+  margin: 100px 0;
+  padding: 0;
 }
 
 .slider-track {
@@ -12,11 +18,12 @@
 
 .slide {
   flex: 0 0 auto;
-  padding: 0 10px;
 }
 
 .slide img {
   height: 200px;
+  margin-right: 10px;
+  display: block;
 }
 
 @keyframes scroll-left {

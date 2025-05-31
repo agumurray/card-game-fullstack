@@ -1,6 +1,10 @@
 .footer {
-  background-color: #f0f0f0;
+  background-color: #1D1D1D;
+  padding: 1rem; 
   padding: 1rem;
   text-align: center;
-  font-size: 0.9rem;
+}
+
+.footer p {
+  color: #F8F8F8; 
 }

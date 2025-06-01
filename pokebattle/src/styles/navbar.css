@@ -1,12 +1,12 @@
 .navbar {
-  background-color: #333;
+  background-color: #1D1D1D;
   padding: 1rem;
   display: flex;
   gap: 1rem;
 }
 
 .navbar a {
-  color: white;
+  color: #F8F8F8;
   text-decoration: none;
 }
 

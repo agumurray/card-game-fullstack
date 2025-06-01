@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { loginUser } from "@/services/apiService";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/useAuth";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
@@ -16,7 +16,7 @@ const LoginPage = () => {
       const res = await loginUser({ usuario, clave });
       await login(res.data.token);
       setMensaje({ tipo: "success", texto: "Login exitoso" });
-      navigate("/"); // redirige a donde quieras
+      navigate("/"); 
     } catch (err) {
       setMensaje({
         tipo: "error",
@@ -26,8 +26,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: "400px" }}>
-      <h2>🔐 Login</h2>
+    <div className="container mt-5" style={{ maxWidth: "500px" }}>
+      <h2>Login</h2>
       <form onSubmit={handleLogin} className="login-form">
         <div className="mb-3">
           <label htmlFor="usuario" className="form-label">
@@ -63,7 +63,11 @@ const LoginPage = () => {
       </form>
 
       {mensaje && (
-        <div className={`alert mt-3 alert-${mensaje.tipo === "success" ? "success" : "danger"}`}>
+        <div
+          className={`alert mt-3 alert-${
+            mensaje.tipo === "success" ? "success" : "danger"
+          }`}
+        >
           {mensaje.texto}
         </div>
       )}

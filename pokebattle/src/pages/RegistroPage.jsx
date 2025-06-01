@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { createUser } from "../services/apiService";
+import { createUser, loginUser } from "../services/apiService";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "@/services/apiService";
 import { useAuth } from "@/contexts/useAuth";
+
 const RegistroPage = () => {
   const [mensaje, setMensaje] = useState(null);
   const navigate = useNavigate();
@@ -20,96 +20,66 @@ const RegistroPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      console.log("hola");
-      console.log(post.usuario);
-      console.log(post.clave);
       await createUser(post);
-      console.log("hola");
-      const usuario = post.usuario;
-      const clave = post.clave;
+      const { usuario, clave } = post;
       const res = await loginUser({ usuario, clave });
       await login(res.data.token);
-      console.log("hola");
       setMensaje({
         tipo: "success",
         texto: "Login exitoso",
       });
-      navigate("/"); // redirige a donde quieras
+      navigate("/");
     } catch (err) {
       setMensaje({
         tipo: "error",
-        texto: err.response?.data?.message || "Error al al registrar",
+        texto: err.response?.data?.message || "Error al registrar",
       });
     }
   };
-  /*
-  
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    createUser(post)
-      .then((response) => {
-        setResult(JSON.stringify(response.data));
-      })
-      .catch((err) => {
-        setResult(JSON.stringify(err.response.data));
-      });
-  };
-  
-  const jsonData = {
-    nombre: "juansito",
-    usuario: "juanpepe123",
-    clave: "Pepe12345@",
-  };
-
-  useEffect(() => {
-    createUser(jsonData)
-      .then((response) => {
-        setResult(JSON.stringify(response.data));
-      })
-      .catch((err) => {
-        setResult(JSON.stringify(err.response.data));
-      });
-  }, []);*/
 
   return (
-    <div className="container mt-5" style={{ maxWidth: "400px" }}>
-      <h2>🔐Registro</h2>
-      <form onSubmit={handleSubmit} className="register-form">
+    <div className="container mt-5" style={{ maxWidth: "500px" }}>
+      <h2>Registro</h2>
+      <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label>nombre:</label>
-          <br />
+          <label htmlFor="nombre" className="form-label">
+            Nombre
+          </label>
           <input
             type="text"
             className="form-control"
-            onChange={handleInput}
+            id="nombre"
             name="nombre"
+            onChange={handleInput}
+            value={post.nombre}
           />
         </div>
-        <br />
         <div className="mb-3">
-          <label>usuario:</label>
-          <br />
+          <label htmlFor="usuario" className="form-label">
+            Usuario
+          </label>
           <input
             type="text"
             className="form-control"
-            onChange={handleInput}
+            id="usuario"
             name="usuario"
+            onChange={handleInput}
+            value={post.usuario}
           />
         </div>
-        <br />
         <div className="mb-3">
           <label htmlFor="clave" className="form-label">
-            clave:
+            Clave
           </label>
-          <br />
           <input
             type="password"
             className="form-control"
-            onChange={handleInput}
+            id="clave"
             name="clave"
+            onChange={handleInput}
+            value={post.clave}
           />
         </div>
-        <br />
         <button type="submit" className="btn btn-primary w-100">
           Registrar
         </button>

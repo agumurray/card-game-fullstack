@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { getUserData, logoutUser } from "@/services/apiService";
 
 const AuthContext = createContext();
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await logoutUser(); // Token se manda automáticamente
+      await logoutUser();
     } catch (e) {
       console.warn("Error al cerrar sesión en el servidor:", e);
     } finally {
@@ -45,4 +45,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export default AuthContext;

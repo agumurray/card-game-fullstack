@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/useAuth";
 import { useNavigate } from "react-router-dom";
 
 // Íconos
@@ -76,16 +76,6 @@ const NavBar = () => {
                       Mis mazos
                     </Link>
                   </li>
-                  <li className="nav-item">
-                    <Link
-                      className="nav-link d-flex align-items-center"
-                      to="/editar-usuario"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <FaUserEdit className="me-1" />
-                      Editar usuario
-                    </Link>
-                  </li>
                 </>
               )}
             </ul>
@@ -120,6 +110,16 @@ const NavBar = () => {
                   <li className="nav-item d-flex align-items-center text-white fw-bold">
                     <FaUserCircle className="me-2" />
                     Hola, {usuario.nombre}
+                  </li>
+                  <li className="nav-item">
+                    <Link
+                      className="nav-link d-flex align-items-center"
+                      to="/editar-usuario"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <FaUserEdit className="me-1" />
+                      Editar usuario
+                    </Link>
                   </li>
                   <li className="nav-item">
                     <button

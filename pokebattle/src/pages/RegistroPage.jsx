@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createUser } from "../services/apiService";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "@/services/apiService";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/useAuth";
 const RegistroPage = () => {
   const [mensaje, setMensaje] = useState(null);
   const navigate = useNavigate();
@@ -22,10 +22,11 @@ const RegistroPage = () => {
     try {
       console.log("hola");
       console.log(post.usuario);
+      console.log(post.clave);
       await createUser(post);
       console.log("hola");
-      usuario = post.usuario;
-      clave = post.clave;
+      const usuario = post.usuario;
+      const clave = post.clave;
       const res = await loginUser({ usuario, clave });
       await login(res.data.token);
       console.log("hola");

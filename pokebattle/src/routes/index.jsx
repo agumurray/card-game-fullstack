@@ -3,6 +3,9 @@ import StatPage from "@/pages/StatPage";
 import LoginPage from "@/pages/LoginPage";
 import HomePage from "@/pages/HomePage";
 import RegistroPage from "../pages/RegistroPage";
+import MisMazosPage from "../pages/MisMazosPage";
+import EditarUsuarioPage from "../pages/EditarUsuarioPage";
+import RutaPrivada from "@/components/RutaPrivada";
 
 const AppRoutes = () => {
   return (
@@ -11,6 +14,23 @@ const AppRoutes = () => {
       <Route path="/stat" element={<StatPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/registro" element={<RegistroPage />} />
+
+      <Route
+        path="/mis-mazos"
+        element={
+          <RutaPrivada>
+            <MisMazosPage />
+          </RutaPrivada>
+        }
+      />
+      <Route
+        path="/editar-usuario"
+        element={
+          <RutaPrivada>
+            <EditarUsuarioPage />
+          </RutaPrivada>
+        }
+      />
     </Routes>
   );
 };

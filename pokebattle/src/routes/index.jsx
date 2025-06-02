@@ -2,9 +2,10 @@ import { Route, Routes } from "react-router-dom";
 import StatPage from "@/pages/StatPage";
 import LoginPage from "@/pages/LoginPage";
 import HomePage from "@/pages/HomePage";
-import RegistroPage from "../pages/RegistroPage";
-import MisMazosPage from "../pages/MisMazosPage";
-import EditarUsuarioPage from "../pages/EditarUsuarioPage";
+import RegistroPage from "@/pages/RegistroPage";
+import MisMazosPage from "@/pages/MisMazosPage";
+import AltaMazoPage from "@/pages/AltaMazoPage";
+import EditarUsuarioPage from "@/pages/EditarUsuarioPage";
 import RutaPrivada from "@/components/RutaPrivada";
 
 const AppRoutes = () => {
@@ -28,6 +29,15 @@ const AppRoutes = () => {
         element={
           <RutaPrivada>
             <EditarUsuarioPage />
+          </RutaPrivada>
+        }
+      />
+
+      <Route
+        path="/alta-mazo"
+        element={
+          <RutaPrivada>
+            <AltaMazoPage />
           </RutaPrivada>
         }
       />

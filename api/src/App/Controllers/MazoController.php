@@ -118,10 +118,8 @@ class MazoController
     public function mostrarMazos(Request $request, Response $response, array $args): Response
     {
         $id_usuario = (int) $args['usuario'];
-        $mazos = $this->repo_mazo->buscarMazosPorId($id_usuario) ?? '';
-        if (!$mazos) {
-            return $this->withJson($response, ['error' => 'el usuario no tiene mazos'], 404);
-        }
+        $mazos = $this->repo_mazo->buscarMazosPorId($id_usuario) ?? [];
+
         foreach ($mazos as $key => $value) {
             $datocarta = $this->repo_mazo_carta->buscarIdCartas($mazos[$key]['id']);
             $mazos[$key]['cartas'] = $this->repo_cartas->mostrarCartas($datocarta);

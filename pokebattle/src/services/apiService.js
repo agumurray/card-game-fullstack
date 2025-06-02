@@ -8,6 +8,12 @@ export const logoutUser = () => api.post("/logout");
 
 export const getUserData = () => api.get("/yo");
 
-export const getMazosPorUsuario = (usuarioId) => api.get(`/usuarios/${usuarioId}/mazos`);
+export const getMazosPorUsuario = (usuarioId) =>
+  api.get(`/usuarios/${usuarioId}/mazos`);
+
+export const eliminarMazo = (id) => api.delete(`/mazos/${id}`);
+
+export const editarNombreMazo = (id, nombre) =>
+  api.put(`/mazos/${id}`, { nombre });
 
 export const getEstadisticas = () => api.get("/estadisticas");

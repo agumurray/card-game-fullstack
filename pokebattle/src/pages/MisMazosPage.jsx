@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { getMazosPorUsuario} from "../services/apiService";
+import {
+  getMazosPorUsuario,
+  eliminarMazo,
+  editarNombreMazo,
+} from "../services/apiService";
 import { useAuth } from "../contexts/useAuth";
 import { Button, Modal, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -21,11 +25,11 @@ const MisMazosPage = () => {
     }
 
     getMazosPorUsuario(usuario.id)
-      .then(res => {
+      .then((res) => {
         setMazos(res.data["Listado de mazos"] || []);
         setLoading(false);
       })
-      .catch(err => {
+      .catch((err) => {
         setError(err.response?.data?.error || "Error al cargar los mazos");
         setLoading(false);
       });
@@ -36,8 +40,10 @@ const MisMazosPage = () => {
   const handleEliminar = (id) => {
     if (confirm("¿Estás seguro que querés eliminar este mazo?")) {
       eliminarMazo(id)
-        .then(() => setMazos(mazos.filter(m => m.id !== id)))
-        .catch(err => alert("No se pudo eliminar: " + err.response?.data?.error));
+        .then(() => setMazos(mazos.filter((m) => m.id !== id)))
+        .catch((err) =>
+          alert("No se pudo eliminar: " + err.response?.data?.error)
+        );
     }
   };
 
@@ -46,24 +52,42 @@ const MisMazosPage = () => {
 
     editarNombreMazo(id, nuevoNombre)
       .then(() => {
-        setMazos(mazos.map(m => m.id === id ? { ...m, nombre: nuevoNombre } : m));
+        setMazos(
+          mazos.map((m) => (m.id === id ? { ...m, nombre: nuevoNombre } : m))
+        );
         setEditandoId(null);
       })
-      .catch(err => alert("No se pudo editar: " + err.response?.data?.error));
+      .catch((err) => alert("No se pudo editar: " + err.response?.data?.error));
   };
 
   if (loading) return <p>Cargando mazos...</p>;
   if (error) return <p className="text-danger">{error}</p>;
 
+  if (mazos.length === 0) {
+    return (
+      <div className="container mt-5 text-center">
+        <h2>Mis Mazos</h2>
+        <p>No tenés ningún mazo creado todavía.</p>
+        <Link to="/alta-mazo">
+          <Button variant="primary">Alta de nuevo mazo</Button>
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="container mt-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Mis Mazos</h2>
-        <Link to="/stat">
-          <Button variant="primary" disabled={!puedeCrear}>
+        {puedeCrear ? (
+          <Link to="/alta-mazo">
+            <Button variant="primary">Alta de nuevo mazo</Button>
+          </Link>
+        ) : (
+          <Button variant="primary" disabled>
             Alta de nuevo mazo
           </Button>
-        </Link>
+        )}
       </div>
 
       <div className="row">
@@ -77,19 +101,55 @@ const MisMazosPage = () => {
                     value={nuevoNombre}
                     onChange={(e) => setNuevoNombre(e.target.value)}
                   />
-                  <Button variant="success" size="sm" onClick={() => handleGuardarNombre(mazo.id)} className="mt-2 me-2">Guardar</Button>
-                  <Button variant="secondary" size="sm" onClick={() => setEditandoId(null)}>Cancelar</Button>
+                  <Button
+                    variant="success"
+                    size="sm"
+                    onClick={() => handleGuardarNombre(mazo.id)}
+                    className="mt-2 me-2"
+                  >
+                    Guardar
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setEditandoId(null)}
+                  >
+                    Cancelar
+                  </Button>
                 </>
               ) : (
                 <>
                   <h4>{mazo.nombre}</h4>
                   <p>Cantidad de cartas: {mazo.cartas.length}</p>
                   <div className="d-flex flex-column gap-2">
-                    <Button variant="info" size="sm" onClick={() => setMazoActivo(mazo)}>Ver mazo</Button>
-                    <Button variant="danger" size="sm" onClick={() => handleEliminar(mazo.id)}>Eliminar</Button>
-                    <Button variant="warning" size="sm" onClick={() => { setEditandoId(mazo.id); setNuevoNombre(mazo.nombre); }}>Editar</Button>
+                    <Button
+                      variant="info"
+                      size="sm"
+                      onClick={() => setMazoActivo(mazo)}
+                    >
+                      Ver mazo
+                    </Button>
+                    <Button
+                      variant="danger"
+                      size="sm"
+                      onClick={() => handleEliminar(mazo.id)}
+                    >
+                      Eliminar
+                    </Button>
+                    <Button
+                      variant="warning"
+                      size="sm"
+                      onClick={() => {
+                        setEditandoId(mazo.id);
+                        setNuevoNombre(mazo.nombre);
+                      }}
+                    >
+                      Editar
+                    </Button>
                     <Link to={`/jugar/${mazo.id}`}>
-                      <Button variant="success" size="sm">Jugar</Button>
+                      <Button variant="success" size="sm">
+                        Jugar
+                      </Button>
                     </Link>
                   </div>
                 </>
@@ -105,7 +165,7 @@ const MisMazosPage = () => {
         </Modal.Header>
         <Modal.Body>
           <ul>
-            {mazoActivo?.cartas.map(carta => (
+            {mazoActivo?.cartas.map((carta) => (
               <li key={carta.id}>{carta.nombre}</li>
             ))}
           </ul>
@@ -121,7 +181,3 @@ const MisMazosPage = () => {
 };
 
 export default MisMazosPage;
-
-
-
-

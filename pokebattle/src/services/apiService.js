@@ -8,4 +8,6 @@ export const logoutUser = () => api.post("/logout");
 
 export const getUserData = () => api.get("/yo");
 
+export const getMazosPorUsuario = (usuarioId) => api.get(`/usuarios/${usuarioId}/mazos`);
+
 export const getEstadisticas = () => api.get("/estadisticas");

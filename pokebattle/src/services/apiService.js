@@ -10,4 +10,8 @@ export const getUserData = () => api.get("/yo");
 
 export const getMazosPorUsuario = (usuarioId) => api.get(`/usuarios/${usuarioId}/mazos`);
 
+export const deleteMazo=(mazoId)=>api.delete(`/mazos/${mazoId}`);
+
+export const updateMazo=(mazoId,data)=>api.put(`/mazos/${mazoId}`,data);
+
 export const getEstadisticas = () => api.get("/estadisticas");

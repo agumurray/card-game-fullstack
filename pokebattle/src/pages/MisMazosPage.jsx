@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getMazosPorUsuario} from "../services/apiService";
+import { getMazosPorUsuario,deleteMazo,updateMazo} from "../services/apiService";
 import { useAuth } from "../contexts/useAuth";
 import { Button, Modal, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -35,7 +35,7 @@ const MisMazosPage = () => {
 
   const handleEliminar = (id) => {
     if (confirm("¿Estás seguro que querés eliminar este mazo?")) {
-      eliminarMazo(id)
+      deleteMazo(id)
         .then(() => setMazos(mazos.filter(m => m.id !== id)))
         .catch(err => alert("No se pudo eliminar: " + err.response?.data?.error));
     }
@@ -44,7 +44,7 @@ const MisMazosPage = () => {
   const handleGuardarNombre = (id) => {
     if (nuevoNombre.trim() === "") return;
 
-    editarNombreMazo(id, nuevoNombre)
+    updateMazo(id, {nombre:nuevoNombre })
       .then(() => {
         setMazos(mazos.map(m => m.id === id ? { ...m, nombre: nuevoNombre } : m));
         setEditandoId(null);
@@ -89,7 +89,7 @@ const MisMazosPage = () => {
                     <Button variant="danger" size="sm" onClick={() => handleEliminar(mazo.id)}>Eliminar</Button>
                     <Button variant="warning" size="sm" onClick={() => { setEditandoId(mazo.id); setNuevoNombre(mazo.nombre); }}>Editar</Button>
                     <Link to={`/jugar/${mazo.id}`}>
-                      <Button variant="success" size="sm">Jugar</Button>
+                      <Button variant="success" size="sm">Jugar con este mazo</Button>
                     </Link>
                   </div>
                 </>

@@ -1,0 +1,17 @@
+.tablero-fondo {
+  background-image: url("https://images.unsplash.com/photo-1581090700227-1f42f6063ec6"); /* puedes usar una imagen estilo "mesa de cartas" */
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+
+.cartas-jugador-row {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 10;
+  justify-content: center;
+}

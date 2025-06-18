@@ -28,37 +28,48 @@ class CartaRepository
         return true;
     }
 
+    // Método agregado en la rama "altaMazo"
     public function obtenerTodas(): array
     {
-      $pdo = $this->database->getConnection();
-      $sql = "SELECT 
-                  c.id, 
-                  c.nombre, 
-                  c.ataque, 
-                  c.ataque_nombre,  
-                  c.atributo_id,
-                  a.nombre AS atributo
-              FROM carta c
-              JOIN atributo a ON c.atributo_id = a.id";
+        $pdo = $this->database->getConnection();
+        $sql = "SELECT 
+                    c.id, 
+                    c.nombre, 
+                    c.ataque, 
+                    c.ataque_nombre,  
+                    c.atributo_id,
+                    a.nombre AS atributo
+                FROM carta c
+                JOIN atributo a ON c.atributo_id = a.id";
 
-      $stmt = $pdo->query($sql);
-      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-      $pdo = $this->database->closeConnection();
-      return $result;
+        $stmt = $pdo->query($sql);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $pdo = $this->database->closeConnection();
+        return $result;
     }
 
-    public function mostrarCartas(array $cartas): array
+    // Firma de método desde rama "main", conservando ambos cambios
+    public function mostrarCartas(array|int $cartas): array
     {
         $pdo = $this->database->getConnection();
-        $i = 0;
-        foreach ($cartas as $key => $value) {
-            $id_cartas[$i] = (int) $value['carta_id'];
-            $i = $i + 1;
-        }
-        $stmt = $pdo->query("SELECT id,nombre,ataque_nombre,ataque FROM carta WHERE id IN (" . implode(',', $id_cartas) . ")");
-        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        // Si te pasaron un solo ID como entero
+        if (is_int($cartas)) {
+            $id_cartas = [$cartas];
+        } else {
+            $id_cartas = [];
+            foreach ($cartas as $value) {
+                $id_cartas[] = (int) $value['carta_id'];
+            }
+        }
+
+        $in = implode(',', array_fill(0, count($id_cartas), '?'));
+        $stmt = $pdo->prepare("SELECT id,nombre,ataque_nombre,ataque,atributo_id FROM carta WHERE id IN ($in)");
+        $stmt->execute($id_cartas);
+
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $pdo = $this->database->closeConnection();
+
         return $data;
     }
 
@@ -117,10 +128,8 @@ class CartaRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
     public function obtenerAtributosDeCartas(array $cartaIds): array
     {
-
         if (empty($cartaIds)) {
             return [];
         }
@@ -135,7 +144,4 @@ class CartaRepository
         $pdo = $this->database->closeConnection();
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
-
-
-
 }

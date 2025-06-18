@@ -44,6 +44,13 @@ class JuegoController
         $datocarta = $this->repo_mazo_carta->buscarIdCartas($id_mazo);
         if ($id_partida && $cartas) {
             $descarta = $this->repo_carta->mostrarCartas($datocarta);
+            $atributo_ids = array_unique(array_column($descarta, 'atributo_id'));
+            $nombres_atributo = $this->repo_atributo->atributosID($atributo_ids);
+
+            foreach ($descarta as &$carta) {
+                $carta['atributo_nombre'] = $nombres_atributo[$carta['atributo_id']] ?? 'Desconocido';
+            }
+
             return $this->withJson($response, ['mensaje' => 'Partida creada correctamente', 'id de partida' => $id_partida, 'cartas' => $descarta]);
         }
 
@@ -74,6 +81,9 @@ class JuegoController
         }
 
         $id_carta_servidor = $this->jugadaServidor();
+        $carta_servidor = $this->repo_carta->mostrarCartas([['carta_id' => $id_carta_servidor]]);
+        $carta_servidor[0]['atributo_nombre'] = $this->repo_atributo->atributoID($carta_servidor[0]['atributo_id']);
+
 
         $fuerza_usuario = $this->repo_carta->obtenerFuerza($id_carta_usuario);
         $fuerza_servidor = $this->repo_carta->obtenerFuerza($id_carta_servidor);
@@ -115,7 +125,7 @@ class JuegoController
 
             return $this->withJson($response, [
                 'status' => 'success',
-                'carta servidor' => $id_carta_servidor,
+                'carta servidor' => $carta_servidor[0],
                 'Fuerza usuario' => $fuerza_usuario,
                 'Fuerza servidor' => $fuerza_servidor,
                 'el_usuario' => $resultado_final,
@@ -126,7 +136,7 @@ class JuegoController
 
         return $this->withJson($response, [
             'status' => 'success',
-            'carta servidor' => $id_carta_servidor,
+            'carta servidor' => $carta_servidor[0],
             'Fuerza usuario' => $fuerza_usuario,
             'Fuerza servidor' => $fuerza_servidor
         ]);

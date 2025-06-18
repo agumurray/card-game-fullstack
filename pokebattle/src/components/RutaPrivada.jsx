@@ -2,7 +2,11 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/useAuth";
 
 const RutaPrivada = ({ children }) => {
-  const { usuario } = useAuth();
+  const { usuario, cargando } = useAuth();
+
+  if (cargando) {
+    return <p>Cargando sesión...</p>; //aca podria ir una ruedita de carga 
+  }
 
   if (!usuario) {
     return <Navigate to="/login" replace />;

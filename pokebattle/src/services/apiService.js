@@ -16,9 +16,9 @@ export const eliminarMazo = (id) => api.delete(`/mazos/${id}`);
 export const editarNombreMazo = (id, nombre) =>
   api.put(`/mazos/${id}`, { nombre });
 
-export const deleteMazo=(mazoId)=>api.delete(`/mazos/${mazoId}`);
+export const deleteMazo = (mazoId) => api.delete(`/mazos/${mazoId}`);
 
-export const updateMazo=(mazoId,data)=>api.put(`/mazos/${mazoId}`,data);
+export const updateMazo = (mazoId, data) => api.put(`/mazos/${mazoId}`, data);
 
 export const createMazo = (data) => api.post("/mazos", data);
 
@@ -35,3 +35,5 @@ export const crearPartida = (id_mazo) => {
 
 export const jugarCarta = (id_partida, id_carta) =>
   api.post("/jugadas", { id_partida, id_carta });
+
+export const editUserData = (id, data) => api.put(`/usuarios/${id}`, data);

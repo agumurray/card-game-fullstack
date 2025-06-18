@@ -3,8 +3,11 @@ import { createUser, loginUser } from "../services/apiService";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/useAuth";
 
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+
 const RegistroPage = () => {
   const [mensaje, setMensaje] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
   const [post, setPost] = useState({
@@ -12,6 +15,10 @@ const RegistroPage = () => {
     usuario: "",
     clave: "",
   });
+
+  const handleShowPassword = (event) => {
+    setShowPassword(!showPassword);
+  };
 
   const handleInput = (event) => {
     setPost({ ...post, [event.target.name]: event.target.value });
@@ -32,7 +39,7 @@ const RegistroPage = () => {
     } catch (err) {
       setMensaje({
         tipo: "error",
-        texto: err.response?.data?.message || "Error al registrar",
+        texto: err.response?.data?.error || "Error al registrar",
       });
     }
   };
@@ -67,20 +74,21 @@ const RegistroPage = () => {
             value={post.usuario}
           />
         </div>
-        <div className="mb-3">
-          <label htmlFor="clave" className="form-label">
-            Clave
-          </label>
+        <label htmlFor="clave">Clave</label>
+        <div className="input-group mb-3">
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             className="form-control"
             id="clave"
             name="clave"
             onChange={handleInput}
             value={post.clave}
           />
+          <button type="button" onClick={handleShowPassword}>
+            {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
+          </button>
         </div>
-        <button type="submit" className="btn btn-primary w-100">
+        <button type="submit" className="btn btn-primary w-100 mb-3">
           Registrar
         </button>
       </form>

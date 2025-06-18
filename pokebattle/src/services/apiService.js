@@ -17,3 +17,5 @@ export const editarNombreMazo = (id, nombre) =>
   api.put(`/mazos/${id}`, { nombre });
 
 export const getEstadisticas = () => api.get("/estadisticas");
+
+export const editUserData = (id, data) => api.put(`/usuarios/${id}`, data);

@@ -2,13 +2,18 @@ import { useState } from "react";
 import { loginUser } from "@/services/apiService";
 import { useAuth } from "@/contexts/useAuth";
 import { useNavigate } from "react-router-dom";
-
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 const LoginPage = () => {
   const [usuario, setUsuario] = useState("");
   const [clave, setClave] = useState("");
   const [mensaje, setMensaje] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  const handleShowPassword = (event) => {
+    setShowPassword(!showPassword);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -16,7 +21,7 @@ const LoginPage = () => {
       const res = await loginUser({ usuario, clave });
       await login(res.data.token);
       setMensaje({ tipo: "success", texto: "Login exitoso" });
-      navigate("/"); 
+      navigate("/");
     } catch (err) {
       setMensaje({
         tipo: "error",
@@ -47,14 +52,20 @@ const LoginPage = () => {
           <label htmlFor="clave" className="form-label">
             Clave
           </label>
-          <input
-            type="password"
-            className="form-control"
-            id="clave"
-            value={clave}
-            onChange={(e) => setClave(e.target.value)}
-            required
-          />
+          <div className="input-group">
+            <input
+              type={showPassword ? "text" : "password"}
+              className="form-control"
+              id="clave"
+              name="clave"
+              value={clave}
+              onChange={(e) => setClave(e.target.value)}
+              required
+            />
+            <button type="button" onClick={handleShowPassword}>
+              {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
+            </button>
+          </div>
         </div>
 
         <button type="submit" className="btn btn-primary w-100">

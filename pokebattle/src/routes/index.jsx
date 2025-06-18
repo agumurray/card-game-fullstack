@@ -26,15 +26,6 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/editar-usuario"
-        element={
-          <RutaPrivada>
-            <EditarUsuarioPage />
-          </RutaPrivada>
-        }
-      />
-
-      <Route
         path="/alta-mazo"
         element={
           <RutaPrivada>
@@ -42,7 +33,14 @@ const AppRoutes = () => {
           </RutaPrivada>
         }
       />
-
+      <Route
+        path="/editar-usuario"
+        element={
+          <RutaPrivada>
+            <EditarUsuarioPage />
+          </RutaPrivada>
+        }
+      />
       <Route
         path="/jugar/:idMazo"
         element={

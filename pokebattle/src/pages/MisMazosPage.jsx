@@ -68,7 +68,7 @@ const MisMazosPage = () => {
           state: {
             partida: {
               ...partida,
-              mazoId: idMazo, 
+              mazoId: idMazo,
             },
           },
         });
@@ -93,7 +93,7 @@ const MisMazosPage = () => {
   const handleGuardarNombre = (id) => {
     if (nuevoNombre.trim() === "") return;
 
-    editarNombreMazo(id, nuevoNombre)
+    editarNombreMazo(id, { nombre: nuevoNombre })
       .then(() => {
         setMazos(
           mazos.map((m) => (m.id === id ? { ...m, nombre: nuevoNombre } : m))
@@ -242,3 +242,4 @@ const MisMazosPage = () => {
 };
 
 export default MisMazosPage;
+

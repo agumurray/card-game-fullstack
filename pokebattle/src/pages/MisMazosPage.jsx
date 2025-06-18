@@ -59,7 +59,7 @@ const MisMazosPage = () => {
     <div className="container mt-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Mis Mazos</h2>
-        <Link to="/stat">
+        <Link to="/alta-mazo">
           <Button variant="primary" disabled={!puedeCrear}>
             Alta de nuevo mazo
           </Button>

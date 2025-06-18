@@ -47,6 +47,23 @@ class MazoController
             'nombre mazo' => $nombre_mazo
         ]);
     }
+    public function ver(Request $request, Response $response): Response
+    {
+        try{
+            $cartas=$this->repo_cartas->obtenerTodas();
+            return $this->withJson($response,[
+                'status'=>'success',
+                'cartas'=>$cartas
+            ],200);
+        }catch(\Exception $e){
+             return $this->withJson($response,[
+                'status'=>'error',
+                'message'=>'error al cargar',
+                'exception' => $e->getMessage() 
+             ],500);
+        }
+    }
+
     public function actualizarMazo(Request $request, Response $response, array $args): Response
     {
         $id_mazo = (int) $args['mazo'];

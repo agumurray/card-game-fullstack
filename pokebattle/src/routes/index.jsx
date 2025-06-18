@@ -4,6 +4,7 @@ import LoginPage from "@/pages/LoginPage";
 import HomePage from "@/pages/HomePage";
 import RegistroPage from "../pages/RegistroPage";
 import MisMazosPage from "../pages/MisMazosPage";
+import AltaMazoPage from "../pages/AltaMazoPage"; 
 import EditarUsuarioPage from "../pages/EditarUsuarioPage";
 import RutaPrivada from "@/components/RutaPrivada";
 
@@ -20,6 +21,14 @@ const AppRoutes = () => {
         element={
           <RutaPrivada>
             <MisMazosPage />
+          </RutaPrivada>
+        }
+      />
+      <Route
+        path="/alta-mazo"
+        element={
+          <RutaPrivada>
+            <AltaMazoPage />
           </RutaPrivada>
         }
       />

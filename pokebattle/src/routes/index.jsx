@@ -6,6 +6,7 @@ import RegistroPage from "@/pages/RegistroPage";
 import MisMazosPage from "@/pages/MisMazosPage";
 import AltaMazoPage from "@/pages/AltaMazoPage";
 import EditarUsuarioPage from "@/pages/EditarUsuarioPage";
+import JugarPage from "@/pages/JugarPage";
 import RutaPrivada from "@/components/RutaPrivada";
 
 const AppRoutes = () => {
@@ -25,6 +26,14 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path="/alta-mazo"
+        element={
+          <RutaPrivada>
+            <AltaMazoPage />
+          </RutaPrivada>
+        }
+      />
+      <Route
         path="/editar-usuario"
         element={
           <RutaPrivada>
@@ -32,12 +41,11 @@ const AppRoutes = () => {
           </RutaPrivada>
         }
       />
-
       <Route
-        path="/alta-mazo"
+        path="/jugar/:idMazo"
         element={
           <RutaPrivada>
-            <AltaMazoPage />
+            <JugarPage />
           </RutaPrivada>
         }
       />

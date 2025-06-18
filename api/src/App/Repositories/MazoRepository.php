@@ -26,7 +26,7 @@ class MazoRepository
 
         return (bool) $result;
     }
-
+    
 
     public function crearMazo(int $id, string $nombre_mazo): int|false
     {

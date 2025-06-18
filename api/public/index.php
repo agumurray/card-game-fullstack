@@ -64,6 +64,9 @@ $app->get('/usuarios/{usuario}', [UsuarioController::class, 'obtener'])
 $app->post('/mazos', [MazoController::class, 'agregar'])
     ->add(AuthMiddleware::class);
 
+$app->get('/allcards', [MazoController::class, 'ver'])
+    ->add(AuthMiddleware::class);
+
 $app->get('/usuarios/{usuario}/mazos', [MazoController::class, 'mostrarMazos'])
     ->add(AuthMiddleware::class);
 

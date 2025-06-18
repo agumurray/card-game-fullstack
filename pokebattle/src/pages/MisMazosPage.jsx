@@ -3,10 +3,11 @@ import {
   getMazosPorUsuario,
   eliminarMazo,
   editarNombreMazo,
+  crearPartida,
 } from "../services/apiService";
 import { useAuth } from "../contexts/useAuth";
 import { Button, Modal, Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const MisMazosPage = () => {
   const { usuario } = useAuth();
@@ -16,6 +17,11 @@ const MisMazosPage = () => {
   const [mazoActivo, setMazoActivo] = useState(null);
   const [editandoId, setEditandoId] = useState(null);
   const [nuevoNombre, setNuevoNombre] = useState("");
+  const navigate = useNavigate();
+
+  const partidaGuardada = JSON.parse(localStorage.getItem("partidaActiva"));
+  const hayPartidaEnCurso = Boolean(partidaGuardada);
+  const mazoEnCursoId = partidaGuardada?.mazoId;
 
   useEffect(() => {
     if (!usuario?.id) {
@@ -35,6 +41,43 @@ const MisMazosPage = () => {
       });
   }, [usuario]);
 
+  const handleJugar = (idMazo) => {
+    crearPartida(idMazo)
+      .then((res) => {
+        const partida = {
+          id: res.data["id de partida"],
+          cartas: res.data.cartas,
+          mensaje: res.data.mensaje,
+        };
+
+        if (!partida.id) {
+          alert("Error interno al crear la partida. Intenta nuevamente.");
+          return;
+        }
+
+        localStorage.setItem(
+          "partidaActiva",
+          JSON.stringify({
+            id: partida.id,
+            mazoId: idMazo,
+            cartas: partida.cartas,
+          })
+        );
+
+        navigate(`/jugar/${idMazo}`, {
+          state: {
+            partida: {
+              ...partida,
+              mazoId: idMazo,
+            },
+          },
+        });
+      })
+      .catch((err) => {
+        alert("Error al crear la partida: " + err.response?.data?.error);
+      });
+  };
+
   const puedeCrear = mazos.length < 3;
 
   const handleEliminar = (id) => {
@@ -50,7 +93,7 @@ const MisMazosPage = () => {
   const handleGuardarNombre = (id) => {
     if (nuevoNombre.trim() === "") return;
 
-    editarNombreMazo(id, nuevoNombre)
+    editarNombreMazo(id, { nombre: nuevoNombre })
       .then(() => {
         setMazos(
           mazos.map((m) => (m.id === id ? { ...m, nombre: nuevoNombre } : m))
@@ -146,11 +189,29 @@ const MisMazosPage = () => {
                     >
                       Editar
                     </Button>
-                    <Link to={`/jugar/${mazo.id}`}>
-                      <Button variant="success" size="sm">
+
+                    {hayPartidaEnCurso && mazo.id === mazoEnCursoId ? (
+                      <Button
+                        variant="success"
+                        size="sm"
+                        onClick={() =>
+                          navigate(`/jugar/${mazo.id}`, {
+                            state: { partida: partidaGuardada },
+                          })
+                        }
+                      >
+                        Reanudar
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="success"
+                        size="sm"
+                        onClick={() => handleJugar(mazo.id)}
+                        disabled={hayPartidaEnCurso}
+                      >
                         Jugar
                       </Button>
-                    </Link>
+                    )}
                   </div>
                 </>
               )}
@@ -181,3 +242,4 @@ const MisMazosPage = () => {
 };
 
 export default MisMazosPage;
+

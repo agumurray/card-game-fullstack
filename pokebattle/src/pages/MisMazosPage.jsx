@@ -93,7 +93,7 @@ const MisMazosPage = () => {
   const handleGuardarNombre = (id) => {
     if (nuevoNombre.trim() === "") return;
 
-    editarNombreMazo(id, { nombre: nuevoNombre })
+    editarNombreMazo(id, nuevoNombre)
       .then(() => {
         setMazos(
           mazos.map((m) => (m.id === id ? { ...m, nombre: nuevoNombre } : m))
@@ -242,4 +242,3 @@ const MisMazosPage = () => {
 };
 
 export default MisMazosPage;
-

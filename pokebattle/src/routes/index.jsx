@@ -8,7 +8,6 @@ import AltaMazoPage from "@/pages/AltaMazoPage";
 import EditarUsuarioPage from "@/pages/EditarUsuarioPage";
 import JugarPage from "@/pages/JugarPage";
 import RutaPrivada from "@/components/RutaPrivada";
-import CartaDemoPage from "@/pages/CartaDemoPage"
 
 const AppRoutes = () => {
   return (
@@ -17,8 +16,6 @@ const AppRoutes = () => {
       <Route path="/stat" element={<StatPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/registro" element={<RegistroPage />} />
-      <Route path="/card-test" element={<CartaDemoPage />} />
-      <Route path="/juego" element={<JugarPage />} />
 
       <Route
         path="/mis-mazos"
@@ -46,14 +43,14 @@ const AppRoutes = () => {
         }
       />
 
-      {/* <Route
+      <Route
         path="/jugar/:idMazo"
         element={
           <RutaPrivada>
             <JugarPage />
           </RutaPrivada>
         }
-      /> */}
+      />
     </Routes>
   );
 };

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Repositories\MazoCartaRepository;
+use App\Repositories\AtributoRepository;
 use App\Repositories\PartidaRepository;
 use App\Repositories\UsuarioRepository;
 use App\Repositories\CartaRepository;
@@ -12,7 +13,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class MazoController
 {
-    public function __construct(private PartidaRepository $repo_partida, private MazoRepository $repo_mazo, private UsuarioRepository $repo_usuario, private CartaRepository $repo_cartas, private MazoCartaRepository $repo_mazo_carta)
+    public function __construct(private PartidaRepository $repo_partida, private MazoRepository $repo_mazo, private UsuarioRepository $repo_usuario, private CartaRepository $repo_cartas, private MazoCartaRepository $repo_mazo_carta, private AtributoRepository $repo_atributo)
     {
     }
 
@@ -49,18 +50,24 @@ class MazoController
     }
     public function ver(Request $request, Response $response): Response
     {
-        try{
-            $cartas=$this->repo_cartas->obtenerTodas();
-            return $this->withJson($response,[
-                'status'=>'success',
-                'cartas'=>$cartas
-            ],200);
-        }catch(\Exception $e){
-             return $this->withJson($response,[
-                'status'=>'error',
-                'message'=>'error al cargar',
-                'exception' => $e->getMessage() 
-             ],500);
+        try {
+            $cartas = $this->repo_cartas->obtenerTodas();
+            $atributo_ids = array_unique(array_column($cartas, 'atributo_id'));
+            $nombres_atributo = $this->repo_atributo->atributosID($atributo_ids);
+
+            foreach ($cartas as &$carta) {
+                $carta['atributo_nombre'] = $nombres_atributo[$carta['atributo_id']] ?? 'Desconocido';
+            }
+            return $this->withJson($response, [
+                'status' => 'success',
+                'cartas' => $cartas
+            ], 200);
+        } catch (\Exception $e) {
+            return $this->withJson($response, [
+               'status' => 'error',
+               'message' => 'error al cargar',
+               'exception' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -110,7 +117,14 @@ class MazoController
             ], 404);
         }
 
-        return $this->withJson($response, $cartas);
+        $atributo_ids = array_unique(array_column($cartas, 'atributo_id'));
+        $nombres_atributo = $this->repo_atributo->atributosID($atributo_ids);
+
+        foreach ($cartas as &$carta) {
+            $carta['atributo_nombre'] = $nombres_atributo[$carta['atributo_id']] ?? 'Desconocido';
+        }
+        return $this->withJson($response, ['status' => 'success',
+                'cartas' => $cartas]);
     }
 
     public function eliminarMazo(Request $request, Response $response, array $args): Response

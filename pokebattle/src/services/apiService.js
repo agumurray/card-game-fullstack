@@ -37,3 +37,8 @@ export const jugarCarta = (id_partida, id_carta) =>
   api.post("/jugadas", { id_partida, id_carta });
 
 export const editUserData = (id, data) => api.put(`/usuarios/${id}`, data);
+
+export const FiltrarCartas = (atributo, nombre) =>
+  api.get(`/cartas?atributo=${atributo}&nombre=${nombre}`);
+
+export const FiltrarCartasN = (nombre) => api.get(`/cartas?nombre=${nombre}`);

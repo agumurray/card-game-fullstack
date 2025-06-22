@@ -9,6 +9,7 @@ const EditarUsuarioPage = () => {
   const [put, setPut] = useState({
     nombre: "",
     clave: "",
+    claverepe: "",
   });
 
   const handleShowPassword = (event) => {
@@ -22,6 +23,9 @@ const EditarUsuarioPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
+      if (put.clave != put.claverepe) {
+        throw new Error("la clave no coincide");
+      }
       await editUserData(usuario.id, put);
       setMensaje({
         tipo: "success",
@@ -30,7 +34,10 @@ const EditarUsuarioPage = () => {
     } catch (err) {
       setMensaje({
         tipo: "error",
-        texto: err.response?.data?.error || "Error al editar los datos",
+        texto:
+          err.response?.data?.error ||
+          err.message ||
+          "Error al editar los datos",
       });
     }
   };
@@ -58,6 +65,7 @@ const EditarUsuarioPage = () => {
             <input
               type="text"
               className="form-control"
+              maxlength={30}
               id="nombre"
               name="nombre"
               onChange={handleInput}
@@ -79,6 +87,19 @@ const EditarUsuarioPage = () => {
             <button type="button" onClick={handleShowPassword}>
               {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
             </button>
+          </div>
+          <div className="mb-3">
+            <label htmlFor="nombre" className="mb-3">
+              Repetir Clave
+            </label>
+            <input
+              type="password"
+              className="form-control"
+              id="claverepe"
+              name="claverepe"
+              onChange={handleInput}
+              value={put.claverepe}
+            />
           </div>
           <button type="submit" className="btn btn-primary w-100 mb-3">
             Modificar Datos

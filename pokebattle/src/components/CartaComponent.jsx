@@ -6,7 +6,7 @@ const imagenes = import.meta.glob("@/assets/pokemons/*.svg", {
   import: "default",
 });
 
-const CartaComponent = ({ nombre, atributo, ataque }) => {
+const CartaComponent = ({ nombre, atributo, ataque, punto }) => {
   const ruta = `/src/assets/pokemons/${nombre.toLowerCase()}.svg`;
   const imagen = imagenes[ruta];
 
@@ -27,7 +27,8 @@ const CartaComponent = ({ nombre, atributo, ataque }) => {
         </Card.Title>
         <Card.Text>
           <strong>Atributo:</strong> {atributo} <br />
-          <strong>Ataque:</strong> {ataque}
+          <strong>Ataque:</strong> {ataque} <br />
+          {punto && <strong>Fuerza: {punto}</strong>}
         </Card.Text>
       </Card.Body>
     </Card>

@@ -55,6 +55,7 @@ const RegistroPage = () => {
           <input
             type="text"
             className="form-control"
+            maxlength={30}
             id="nombre"
             name="nombre"
             onChange={handleInput}

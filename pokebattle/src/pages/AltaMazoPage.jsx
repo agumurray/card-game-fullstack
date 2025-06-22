@@ -1,5 +1,11 @@
+import Carta from "@/components/CartaComponent";
 import React, { useEffect, useState } from "react";
-import { createMazo, getAllCartas } from "../services/apiService";
+import {
+  createMazo,
+  getAllCartas,
+  FiltrarCartas,
+  FiltrarCartasN,
+} from "../services/apiService";
 
 const AltaMazoPage = () => {
   const [cartas, setCartas] = useState([]);
@@ -7,18 +13,56 @@ const AltaMazoPage = () => {
   const [nombreMazo, setNombreMazo] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
+  const [filtro, setFiltro] = useState({
+    atributo: "",
+    nombre: "",
+  });
 
   useEffect(() => {
-    getAllCartas()
-      .then((res) => {
-        if (res.data.status === "success") {
-          setCartas(res.data.cartas);
-        } else {
-          setError("Error al obtener las cartas.");
-        }
-      })
-      .catch(() => setError("Error al conectar con el servidor para obtener cartas."));
-  }, []);
+    if (!filtro.nombre && !filtro.atributo) {
+      getAllCartas()
+        .then((res) => {
+          if (res.data.status === "success") {
+            setCartas(res.data.cartas);
+          } else {
+            setError("Error al obtener las cartas.");
+          }
+        })
+        .catch(() =>
+          setError("Error al conectar con el servidor para obtener cartas.")
+        );
+    } else {
+      if (!filtro.atributo) {
+        FiltrarCartasN(filtro.nombre)
+          .then((res) => {
+            if (res.data.status === "success") {
+              setCartas(res.data.cartas);
+              setError("");
+            }
+          })
+          .catch(() => {
+            setError("no se encontro ninguna carta con esos parametros");
+            setCartas([]);
+          });
+      } else {
+        FiltrarCartas(filtro.atributo, filtro.nombre)
+          .then((res) => {
+            if (res.data.status === "success") {
+              setCartas(res.data.cartas);
+              setError("");
+            }
+          })
+          .catch(() => {
+            setError("no se encontro ninguna carta con esos parametros");
+            setCartas([]);
+          });
+      }
+    }
+  }, [filtro]);
+
+  const borrarFiltros = () => {
+    setFiltro({ ...filtro, nombre: "", atributo: "" });
+  };
 
   const toggleCarta = (id) => {
     if (cartasSeleccionadas.includes(id)) {
@@ -52,7 +96,9 @@ const AltaMazoPage = () => {
       const data = res.data;
 
       if (data.status === "success") {
-        setMensaje(`Mazo "${data["nombre mazo"]}" creado con éxito (ID ${data["id mazo"]})`);
+        setMensaje(
+          `Mazo "${data["nombre mazo"]}" creado con éxito (ID ${data["id mazo"]})`
+        );
         setCartasSeleccionadas([]);
         setNombreMazo("");
       } else {
@@ -68,14 +114,48 @@ const AltaMazoPage = () => {
       <h2 className="text-xl font-bold mb-4">Crear nuevo mazo</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Nombre del mazo"
-          value={nombreMazo}
-          onChange={(e) => setNombreMazo(e.target.value)}
-          className="w-full border px-3 py-2 rounded"
-        />
-
+        <div className="container d-flex justify-content-between align-items-center">
+          <div className="me-3 flex-grow-1">
+            <input
+              type="text"
+              placeholder="Nombre del mazo"
+              value={nombreMazo}
+              onChange={(e) => setNombreMazo(e.target.value)}
+              className=" w-full border px-3 py-2 rounded"
+            />
+          </div>
+          <div className="d-flex align-items-center">
+            <select
+              className="form-select"
+              value={filtro.atributo}
+              onChange={(e) =>
+                setFiltro({ ...filtro, atributo: e.target.value })
+              }
+            >
+              <option value="">Ninguno</option>
+              <option value="1">Fuego</option>
+              <option value="2">Agua</option>
+              <option value="3">Tierra</option>
+              <option value="4">Normal</option>
+              <option value="5">Volador</option>
+              <option value="6">Piedra</option>
+            </select>
+            <input
+              type="text"
+              placeholder="Buscar"
+              value={filtro.nombre}
+              onChange={(e) => setFiltro({ ...filtro, nombre: e.target.value })}
+              className="w-full border px-3 py-2 rounded"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={borrarFiltros}
+            className="btn btn-danger px-4 py-2 rounded"
+          >
+            Borrar Filtro
+          </button>
+        </div>
         <div className="grid grid-cols-2 gap-2">
           {cartas.map((carta) => (
             <button
@@ -83,20 +163,32 @@ const AltaMazoPage = () => {
               key={carta.id}
               onClick={() => toggleCarta(carta.id)}
               className={`p-2 border rounded ${
-                cartasSeleccionadas.includes(carta.id) ? "bg-green-300" : "bg-white"
+                cartasSeleccionadas.includes(carta.id)
+                  ? "bg-success"
+                  : "bg-white"
               }`}
             >
-              {carta.nombre}
+              <Carta
+                nombre={carta.nombre}
+                atributo={carta.atributo_nombre}
+                ataque={carta.ataque_nombre}
+                punto={carta.ataque}
+              />
             </button>
           ))}
         </div>
 
-        <p className="text-sm text-gray-600">Cartas seleccionadas: {cartasSeleccionadas.length} / 5</p>
+        <p className="text-sm text-gray-600">
+          Cartas seleccionadas: {cartasSeleccionadas.length} / 5
+        </p>
 
         {error && <p className="text-red-600 font-medium">{error}</p>}
         {mensaje && <p className="text-green-600 font-medium">{mensaje}</p>}
 
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+        <button
+          type="submit"
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
           Crear mazo
         </button>
       </form>

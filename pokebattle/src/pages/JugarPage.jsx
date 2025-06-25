@@ -1,6 +1,6 @@
 import Carta from "@/components/CartaComponent";
 import CartaOculta from "@/components/CartaServidorComponent";
-import fondo from "@/assets/fondo.png";
+import fon from "@/assets/fon.png";
 import { Container, Row, Col, Image } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -170,11 +170,11 @@ const JugarPage = () => {
       <Row className="justify-content-center mb-4">
         <Col xs="auto">
           <Image
-            src={fondo}
+            src={fon}
             alt="Tablero"
             style={{
               width: "66rem",
-              height: "200px",
+              height: "260px",
               objectFit: "cover",
               borderRadius: "1rem",
               border: "3px solid #333",

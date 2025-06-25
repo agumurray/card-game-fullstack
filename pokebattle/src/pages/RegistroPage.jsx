@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createUser, loginUser } from "../services/apiService";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/useAuth";
-
+import LoadingSpinner from "../components/LoadingSpinner";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 const RegistroPage = () => {
@@ -10,6 +10,7 @@ const RegistroPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [loadingCursor, setLoadingCursor] = useState(false);
   const [post, setPost] = useState({
     nombre: "",
     usuario: "",
@@ -26,6 +27,7 @@ const RegistroPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoadingCursor(true);
     try {
       await createUser(post);
       const { usuario, clave } = post;
@@ -41,6 +43,8 @@ const RegistroPage = () => {
         tipo: "error",
         texto: err.response?.data?.error || "Error al registrar",
       });
+    } finally{
+      setLoadingCursor(false);
     }
   };
 
@@ -102,6 +106,7 @@ const RegistroPage = () => {
           {mensaje.texto}
         </div>
       )}
+      <LoadingSpinner active={loadingCursor} />
     </div>
   );
 };

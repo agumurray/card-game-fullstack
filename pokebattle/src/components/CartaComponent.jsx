@@ -1,18 +1,17 @@
 import { Card } from "react-bootstrap";
 
-// Importa todos los SVGs de la carpeta pokemons
 const imagenes = import.meta.glob("@/assets/pokemons/*.svg", {
   eager: true,
   import: "default",
 });
 
-const CartaComponent = ({ nombre, atributo, ataque, punto }) => {
+const CartaComponent = ({ nombre, atributo, ataque, punto,customStyle={} }) => {
   const ruta = `/src/assets/pokemons/${nombre.toLowerCase()}.svg`;
   const imagen = imagenes[ruta];
 
   return (
     <Card
-      style={{ width: "13rem", height: "270px", border: "2px solid #444" }}
+      style={{ width: "13rem", height: "270px", border: "2px solid #444" ,...customStyle}}
       className="text-center shadow"
     >
       <Card.Img

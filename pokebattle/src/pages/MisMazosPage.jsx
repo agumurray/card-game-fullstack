@@ -8,6 +8,8 @@ import {
 import { useAuth } from "../contexts/useAuth";
 import { Button, Modal, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import CartaComponent from "../components/CartaComponent";
+
 
 const MisMazosPage = () => {
   const { usuario } = useAuth();
@@ -135,8 +137,8 @@ const MisMazosPage = () => {
 
       <div className="row">
         {mazos.map((mazo) => (
-          <div key={mazo.id} className="col-md-4 mb-4">
-            <div className="border p-3 h-100 rounded text-center">
+          <div key={mazo.id} className="col-md-4 mb-4" >
+            <div className="border p-3 h-100 rounded text-center"style={{backgroundColor:"rgb(33, 37, 41)",color:"white",boxShadow: "0 4px 8px rgba(119, 0, 0, 0.7)",}}>
               {editandoId === mazo.id ? (
                 <>
                   <Form.Control
@@ -220,16 +222,25 @@ const MisMazosPage = () => {
         ))}
       </div>
 
-      <Modal show={mazoActivo} onHide={() => setMazoActivo(null)}>
+      <Modal show={mazoActivo} onHide={() => setMazoActivo(null)} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>{mazoActivo?.nombre}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <ul>
-            {mazoActivo?.cartas.map((carta) => (
-              <li key={carta.id}>{carta.nombre}</li>
+        <Modal.Body style={{ maxHeight: "70vh", overflowY: "auto" }}>
+          <div className="d-flex flex-wrap justify-content-center gap-3">
+            {mazoActivo?.cartas.map((carta)=>(
+              <CartaComponent
+              key={carta.id}
+              nombre={carta.nombre}
+              atributo={carta.atributo}
+              ataque={carta.ataque}
+              punto={carta.punto}
+              customStyle={{
+                width:"13rem",
+                height:"250px"
+              }}/>
             ))}
-          </ul>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setMazoActivo(null)}>

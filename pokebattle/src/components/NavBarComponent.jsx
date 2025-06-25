@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation,useNavigate} from "react-router-dom";
+import { useState,useEffect } from "react";
 import { useAuth } from "@/contexts/useAuth";
-import { useNavigate } from "react-router-dom";
+import CursorLoader from "./LoadingSpinner";
+
 
 // Íconos
 import {
@@ -15,14 +16,27 @@ import {
   FaLayerGroup,
 } from "react-icons/fa";
 
+
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { usuario, logout } = useAuth();
   const navigate = useNavigate();
 
+  const location = useLocation();
+  const[loading,setloading]=useState(false);
+  
+  useEffect(()=>{
+    setloading(true);
+    const timer = setTimeout(()=>{
+      setloading(false);
+    },300);
+    return()=> clearTimeout(timer);
+  },[location]);
+
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
+    <>
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-3">
       <div className="container-fluid">
         <button
@@ -141,6 +155,9 @@ const NavBar = () => {
         </div>
       </div>
     </nav>
+    <CursorLoader active={loading} />
+    </>
+   
   );
 };
 

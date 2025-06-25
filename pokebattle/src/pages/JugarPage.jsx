@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { getAtributos, jugarCarta, crearPartida } from "../services/apiService";
 import ResultadoRondaModal from "@/components/ResultadoRondaComponent";
 import ResultadoFinalModal from "@/components/ResultadoFinalComponent";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const obtenerCartasServidor = (partidaId, setCartasServidor) => {
   getAtributos(1, partidaId)
@@ -40,8 +41,11 @@ const JugarPage = () => {
   const [partidaFinalizada, setPartidaFinalizada] = useState(false);
   const [mostrarFinalModal, setMostrarFinalModal] = useState(false);
   const [mazoId, setMazoId] = useState(null);
+  const [loading, setLoading] = useState(false);
+
 
   const handleDobleClick = async (carta) => {
+    setLoading(true);
     try {
       const res = await jugarCarta(partida.id, carta.id);
       const data = res.data;
@@ -88,6 +92,8 @@ const JugarPage = () => {
       }
     } catch (err) {
       console.error("Error al jugar carta:", err.response?.data || err);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -153,6 +159,7 @@ const JugarPage = () => {
   if (!partida) return null;
 
   return (
+    <><LoadingSpinner active={loading} />
     <Container fluid className="py-4 d-flex flex-column align-items-center">
       <div className="d-flex justify-content-center gap-3 mb-4 flex-wrap">
         {cartasServidor.map((atributo, i) => (
@@ -172,8 +179,7 @@ const JugarPage = () => {
               borderRadius: "1rem",
               border: "3px solid #333",
               boxShadow: "0 0 10px rgba(0,0,0,0.5)",
-            }}
-          />
+            }} />
         </Col>
       </Row>
 
@@ -187,11 +193,11 @@ const JugarPage = () => {
             <Carta
               nombre={carta.nombre}
               atributo={carta.atributo_nombre}
-              ataque={carta.ataque_nombre}
-            />
+              ataque={carta.ataque_nombre} />
           </div>
         ))}
       </div>
+
 
       <ResultadoRondaModal
         {...resultadoModal}
@@ -200,16 +206,14 @@ const JugarPage = () => {
           if (partidaFinalizada) {
             setMostrarFinalModal(true);
           }
-        }}
-      />
+        } } />
 
       <ResultadoFinalModal
         show={mostrarFinalModal}
         resultado={resultadoModal.resultado}
         onJugarOtraVez={jugarOtraVez}
-        onIrAMazos={() => navigate("/mis-mazos")}
-      />
-    </Container>
+        onIrAMazos={() => navigate("/mis-mazos")} />
+    </Container></>
   );
 };
 

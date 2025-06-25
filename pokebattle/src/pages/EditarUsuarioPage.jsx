@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/useAuth";
 import { editUserData } from "../services/apiService";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+
 const EditarUsuarioPage = () => {
   const [mensaje, setMensaje] = useState(null);
   const { usuario } = useAuth();

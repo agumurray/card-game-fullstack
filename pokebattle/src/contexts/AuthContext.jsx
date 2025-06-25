@@ -28,12 +28,21 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    const hayPartidaActiva = localStorage.getItem("partidaActiva");
+
+    if (hayPartidaActiva) {
+      const confirmar = window.confirm(
+        "Tiene una partida en curso. Si se desloguea, la perderá. ¿Desea continuar?"
+      );
+      if (!confirmar) return; 
+    }
+
     try {
       await logoutUser();
     } catch (e) {
       console.warn("Error al cerrar sesión en el servidor:", e);
     } finally {
-      localStorage.removeItem("token");
+      localStorage.clear(); 
       setUsuario(null);
     }
   };

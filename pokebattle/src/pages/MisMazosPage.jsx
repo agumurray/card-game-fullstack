@@ -10,7 +10,6 @@ import { Button, Modal, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import CartaComponent from "../components/CartaComponent";
 
-
 const MisMazosPage = () => {
   const { usuario } = useAuth();
   const [mazos, setMazos] = useState([]);
@@ -137,8 +136,15 @@ const MisMazosPage = () => {
 
       <div className="row">
         {mazos.map((mazo) => (
-          <div key={mazo.id} className="col-md-4 mb-4" >
-            <div className="border p-3 h-100 rounded text-center"style={{backgroundColor:"rgb(33, 37, 41)",color:"white",boxShadow: "0 4px 8px rgba(119, 0, 0, 0.7)",}}>
+          <div key={mazo.id} className="col-md-4 mb-4">
+            <div
+              className="border p-3 h-100 rounded text-center"
+              style={{
+                backgroundColor: "rgb(33, 37, 41)",
+                color: "white",
+                boxShadow: "0 4px 8px rgba(119, 0, 0, 0.7)",
+              }}
+            >
               {editandoId === mazo.id ? (
                 <>
                   <Form.Control
@@ -228,17 +234,16 @@ const MisMazosPage = () => {
         </Modal.Header>
         <Modal.Body style={{ maxHeight: "70vh", overflowY: "auto" }}>
           <div className="d-flex flex-wrap justify-content-center gap-3">
-            {mazoActivo?.cartas.map((carta)=>(
+            {mazoActivo?.cartas.map((carta) => (
               <CartaComponent
-              key={carta.id}
-              nombre={carta.nombre}
-              atributo={carta.atributo}
-              ataque={carta.ataque}
-              punto={carta.punto}
-              customStyle={{
-                width:"13rem",
-                height:"250px"
-              }}/>
+                nombre={carta.nombre}
+                atributo={carta.atributo_nombre}
+                ataque={carta.ataque_nombre}
+                customStyle={{
+                  width: "13rem",
+                  height: "250px",
+                }}
+              />
             ))}
           </div>
         </Modal.Body>

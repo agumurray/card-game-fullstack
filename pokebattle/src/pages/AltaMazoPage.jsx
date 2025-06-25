@@ -1,5 +1,5 @@
 import Carta from "@/components/CartaComponent";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   createMazo,
   getAllCartas,
@@ -188,7 +188,7 @@ const AltaMazoPage = () => {
         <button
           type="submit"
           className="bg-blue-500 text-white px-4 py-2 rounded"
-          style={{backgroundColor:"rgb(33, 37, 41)",color:"white"}}
+          style={{ backgroundColor: "rgb(33, 37, 41)", color: "white" }}
         >
           Crear mazo
         </button>

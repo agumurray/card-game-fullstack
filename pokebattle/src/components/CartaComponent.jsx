@@ -12,14 +12,14 @@ const CartaComponent = ({ nombre, atributo, ataque, punto }) => {
 
   return (
     <Card
-      style={{ width: "12rem", height: "270px", border: "2px solid #444" }}
+      style={{ width: "13rem", height: "270px", border: "2px solid #444" }}
       className="text-center shadow"
     >
       <Card.Img
         variant="top"
         src={imagen}
         alt={`Imagen de ${nombre}`}
-        style={{ height: "150px", objectFit: "contain", padding: "10px" }}
+        style={{ height: "150px", objectFit: "contain", padding: "10px",display:"block",marginInline:"auto",width:"100%"}}
       />
       <Card.Body>
         <Card.Title>

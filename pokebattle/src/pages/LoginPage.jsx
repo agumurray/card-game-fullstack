@@ -2,12 +2,14 @@ import { useState } from "react";
 import { loginUser } from "@/services/apiService";
 import { useAuth } from "@/contexts/useAuth";
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 const LoginPage = () => {
   const [usuario, setUsuario] = useState("");
   const [clave, setClave] = useState("");
   const [mensaje, setMensaje] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [loadingCursor, setLoadingCursor] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -17,6 +19,7 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoadingCursor(true);
     try {
       const res = await loginUser({ usuario, clave });
       await login(res.data.token);
@@ -27,6 +30,8 @@ const LoginPage = () => {
         tipo: "error",
         texto: err.response?.data?.message || "Error al iniciar sesión",
       });
+    }finally{
+      setLoadingCursor(false);
     }
   };
 
@@ -82,6 +87,7 @@ const LoginPage = () => {
           {mensaje.texto}
         </div>
       )}
+      <LoadingSpinner active={loadingCursor} />
     </div>
   );
 };

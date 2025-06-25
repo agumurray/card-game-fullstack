@@ -2,10 +2,13 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/useAuth";
 import { editUserData } from "../services/apiService";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import LoadingSpinner from "../components/LoadingSpinner";
+
 const EditarUsuarioPage = () => {
   const [mensaje, setMensaje] = useState(null);
   const { usuario } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [loadingCursor, setLoadingCursor] = useState(false);
   const [put, setPut] = useState({
     nombre: "",
     clave: "",
@@ -22,6 +25,7 @@ const EditarUsuarioPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoadingCursor(true);
     try {
       if (put.clave != put.claverepe) {
         throw new Error("la clave no coincide");
@@ -39,6 +43,8 @@ const EditarUsuarioPage = () => {
           err.message ||
           "Error al editar los datos",
       });
+    }finally{
+    setLoadingCursor(false);
     }
   };
   return (
@@ -121,6 +127,7 @@ const EditarUsuarioPage = () => {
           </div>
         )}
       </div>
+      <LoadingSpinner active={loadingCursor} />
     </div>
   );
 };

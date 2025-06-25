@@ -83,5 +83,16 @@ class JugadaRepository
         return $resultadoFinal;
     }
 
+    public function eliminarJugadasDePartida(int $id_partida): void
+    {
+        $pdo = $this->database->getConnection();
+
+        $stmt = $pdo->prepare("DELETE FROM jugada WHERE partida_id = :id_partida");
+        $stmt->execute([':id_partida' => $id_partida]);
+
+        $this->database->closeConnection();
+    }
+
+
 
 }

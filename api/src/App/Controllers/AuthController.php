@@ -2,15 +2,18 @@
 
 namespace App\Controllers;
 
-use Psr\Http\Message\ResponseFactoryInterface;
+
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Repositories\UsuarioRepository;
+use App\Repositories\PartidaRepository;
+use App\Repositories\MazoCartaRepository;
+use App\Repositories\JugadaRepository;
 class AuthController
 {
     private $secretKey;
 
-    public function __construct(private UsuarioRepository $repo)
+    public function __construct(private UsuarioRepository $repo, private PartidaRepository $repo_partida, private MazoCartaRepository $repo_mazo_carta, private JugadaRepository $repo_jugada)
     {
     }
 
@@ -90,11 +93,24 @@ class AuthController
             return $this->withJson($response, ['status' => 'error', 'message' => 'Usuario no autenticado'], 401);
         }
 
+        $partida_id = $this->repo_partida->tienePartidaEnCurso($id_usuario);
+
+        if ($partida_id) {
+            $mazo_id = $this->repo_partida->obtenerIDMazo($partida_id);
+
+            $this->repo_mazo_carta->actualizarCartas($mazo_id, 'en_mazo');
+            $this->repo_mazo_carta->actualizarCartas(1, 'en_mazo');
+
+            $this->repo_partida->finalizarPartida($partida_id, "perdio");
+
+            $this->repo_jugada->eliminarJugadasDePartida($partida_id);
+        }
+
         $this->repo->borrarToken($id_usuario);
 
         return $this->withJson($response, [
             'status' => 'success',
-            'message' => 'Sesion cerrada correctamente'
+            'message' => 'Sesión cerrada correctamente'
         ]);
     }
 

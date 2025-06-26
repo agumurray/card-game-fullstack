@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/useAuth";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-
+import "@/styles/form.css";
 const RegistroPage = () => {
   const [mensaje, setMensaje] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -43,13 +43,13 @@ const RegistroPage = () => {
         tipo: "error",
         texto: err.response?.data?.error || "Error al registrar",
       });
-    } finally{
+    } finally {
       setLoadingCursor(false);
     }
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: "500px" }}>
+    <div className="container mt-5" class="form">
       <h2>Registro</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
@@ -89,7 +89,11 @@ const RegistroPage = () => {
             onChange={handleInput}
             value={post.clave}
           />
-          <button type="button" onClick={handleShowPassword}>
+          <button
+            type="button"
+            className="btn btn-dark"
+            onClick={handleShowPassword}
+          >
             {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
           </button>
         </div>

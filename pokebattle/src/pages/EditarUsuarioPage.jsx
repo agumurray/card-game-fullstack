@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/useAuth";
 import { editUserData } from "../services/apiService";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import LoadingSpinner from "../components/LoadingSpinner";
-
+import "@/styles/form.css";
 const EditarUsuarioPage = () => {
   const [mensaje, setMensaje] = useState(null);
   const { usuario } = useAuth();
@@ -43,12 +43,12 @@ const EditarUsuarioPage = () => {
           err.message ||
           "Error al editar los datos",
       });
-    }finally{
-    setLoadingCursor(false);
+    } finally {
+      setLoadingCursor(false);
     }
   };
   return (
-    <div className="container mt-5" style={{ maxWidth: "500px" }}>
+    <div className="container mt-5" class="form">
       <h2 className="text-center">Editar usuario</h2>
       <h2 className="text-left">Datos</h2>
       <div>
@@ -90,7 +90,11 @@ const EditarUsuarioPage = () => {
               onChange={handleInput}
               value={put.clave}
             />
-            <button type="button" onClick={handleShowPassword}>
+            <button
+              type="button"
+              className="btn btn-dark"
+              onClick={handleShowPassword}
+            >
               {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
             </button>
           </div>

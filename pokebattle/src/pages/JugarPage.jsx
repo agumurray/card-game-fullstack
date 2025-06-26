@@ -8,6 +8,7 @@ import { getAtributos, jugarCarta, crearPartida } from "../services/apiService";
 import ResultadoRondaModal from "@/components/ResultadoRondaComponent";
 import ResultadoFinalModal from "@/components/ResultadoFinalComponent";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import "@/styles/JugarPage.css";
 
 const obtenerCartasServidor = (partidaId, setCartasServidor) => {
   getAtributos(1, partidaId)
@@ -42,7 +43,6 @@ const JugarPage = () => {
   const [mostrarFinalModal, setMostrarFinalModal] = useState(false);
   const [mazoId, setMazoId] = useState(null);
   const [loading, setLoading] = useState(false);
-
 
   const handleDobleClick = async (carta) => {
     setLoading(true);
@@ -92,7 +92,7 @@ const JugarPage = () => {
       }
     } catch (err) {
       console.error("Error al jugar carta:", err.response?.data || err);
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -159,61 +159,55 @@ const JugarPage = () => {
   if (!partida) return null;
 
   return (
-    <><LoadingSpinner active={loading} />
-    <Container fluid className="py-4 d-flex flex-column align-items-center">
-      <div className="d-flex justify-content-center gap-3 mb-4 flex-wrap">
-        {cartasServidor.map((atributo, i) => (
-          <CartaOculta atributo={atributo} key={i} />
-        ))}
-      </div>
+    <>
+      <LoadingSpinner active={loading} />
+      <Container fluid className="py-4 d-flex flex-column align-items-center">
+        <div className="d-flex justify-content-center gap-3 mb-4 flex-wrap">
+          {cartasServidor.map((atributo, i) => (
+            <CartaOculta atributo={atributo} key={i} />
+          ))}
+        </div>
 
-      <Row className="justify-content-center mb-4">
-        <Col xs="auto">
-          <Image
-            src={fon}
-            alt="Tablero"
-            style={{
-              width: "66rem",
-              height: "260px",
-              objectFit: "cover",
-              borderRadius: "1rem",
-              border: "3px solid #333",
-              boxShadow: "0 0 10px rgba(0,0,0,0.5)",
-            }} />
-        </Col>
-      </Row>
+        <Row className="justify-content-center mb-4">
+          <Col xs="auto">
+            <Image src={fon} alt="Tablero" id="aaa" />
+          </Col>
+        </Row>
 
-      <div className="d-flex justify-content-center gap-3 mt-3 flex-wrap">
-        {cartasJugador.map((carta, i) => (
-          <div
-            key={i}
-            onDoubleClick={() => handleDobleClick(carta)}
-            style={{ cursor: "pointer" }}
-          >
-            <Carta
-              nombre={carta.nombre}
-              atributo={carta.atributo_nombre}
-              ataque={carta.ataque_nombre} />
-          </div>
-        ))}
-      </div>
+        <div className="d-flex justify-content-center gap-3 mt-3 flex-wrap">
+          {cartasJugador.map((carta, i) => (
+            <div
+              key={i}
+              onDoubleClick={() => handleDobleClick(carta)}
+              style={{ cursor: "pointer" }}
+            >
+              <Carta
+                nombre={carta.nombre}
+                atributo={carta.atributo_nombre}
+                ataque={carta.ataque_nombre}
+              />
+            </div>
+          ))}
+        </div>
 
+        <ResultadoRondaModal
+          {...resultadoModal}
+          onHide={() => {
+            setResultadoModal((prev) => ({ ...prev, show: false }));
+            if (partidaFinalizada) {
+              setMostrarFinalModal(true);
+            }
+          }}
+        />
 
-      <ResultadoRondaModal
-        {...resultadoModal}
-        onHide={() => {
-          setResultadoModal((prev) => ({ ...prev, show: false }));
-          if (partidaFinalizada) {
-            setMostrarFinalModal(true);
-          }
-        } } />
-
-      <ResultadoFinalModal
-        show={mostrarFinalModal}
-        resultado={resultadoModal.resultado}
-        onJugarOtraVez={jugarOtraVez}
-        onIrAMazos={() => navigate("/mis-mazos")} />
-    </Container></>
+        <ResultadoFinalModal
+          show={mostrarFinalModal}
+          resultado={resultadoModal.resultado}
+          onJugarOtraVez={jugarOtraVez}
+          onIrAMazos={() => navigate("/mis-mazos")}
+        />
+      </Container>
+    </>
   );
 };
 

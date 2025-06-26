@@ -151,7 +151,7 @@ const AltaMazoPage = () => {
           <button
             type="button"
             onClick={borrarFiltros}
-            className="btn btn-danger px-4 py-2 rounded"
+            className="btn btn-danger px-4 py-2"
           >
             Borrar Filtro
           </button>
@@ -178,18 +178,13 @@ const AltaMazoPage = () => {
           ))}
         </div>
 
-        <p className="text-sm text-gray-600">
+        <p className="fs-5">
           Cartas seleccionadas: {cartasSeleccionadas.length} / 5
         </p>
+        {error && <p className="alert alert-danger">{error}</p>}
+        {mensaje && <p className="alert alert-success">{mensaje}</p>}
 
-        {error && <p className="text-red-600 font-medium">{error}</p>}
-        {mensaje && <p className="text-green-600 font-medium">{mensaje}</p>}
-
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-          style={{ backgroundColor: "rgb(33, 37, 41)", color: "white" }}
-        >
+        <button type="submit" className="btn btn-dark">
           Crear mazo
         </button>
       </form>

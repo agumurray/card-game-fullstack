@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/useAuth";
 import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import "@/styles/form.css";
 const LoginPage = () => {
   const [usuario, setUsuario] = useState("");
   const [clave, setClave] = useState("");
@@ -30,15 +31,15 @@ const LoginPage = () => {
         tipo: "error",
         texto: err.response?.data?.message || "Error al iniciar sesión",
       });
-    }finally{
+    } finally {
       setLoadingCursor(false);
     }
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: "500px" }}>
+    <div className="container mt-5" class="form">
       <h2>Login</h2>
-      <form onSubmit={handleLogin} className="login-form">
+      <form onSubmit={handleLogin}>
         <div className="mb-3">
           <label htmlFor="usuario" className="form-label">
             Usuario
@@ -67,7 +68,11 @@ const LoginPage = () => {
               onChange={(e) => setClave(e.target.value)}
               required
             />
-            <button type="button" onClick={handleShowPassword}>
+            <button
+              type="button"
+              className="btn btn-dark"
+              onClick={handleShowPassword}
+            >
               {showPassword ? <FaRegEye /> : <FaRegEyeSlash />}
             </button>
           </div>

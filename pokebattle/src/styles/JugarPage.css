@@ -15,3 +15,12 @@
   z-index: 10;
   justify-content: center;
 }
+
+#aaa {
+  width: 66rem;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 1rem;
+  border: 3px solid #333;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}

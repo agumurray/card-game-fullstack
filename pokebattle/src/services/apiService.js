@@ -22,7 +22,7 @@ export const updateMazo = (mazoId, data) => api.put(`/mazos/${mazoId}`, data);
 
 export const createMazo = (data) => api.post("/mazos", data);
 
-export const getAllCartas = () => api.get("/allcards");
+export const getAllCartas = () => api.get("/cartas");
 
 export const getEstadisticas = () => api.get("/estadisticas");
 

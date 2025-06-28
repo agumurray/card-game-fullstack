@@ -28,24 +28,6 @@ class CartaRepository
         return true;
     }
 
-    public function obtenerTodas(): array
-    {
-        $pdo = $this->database->getConnection();
-        $sql = "SELECT 
-                    c.id, 
-                    c.nombre, 
-                    c.ataque, 
-                    c.ataque_nombre,  
-                    c.atributo_id,
-                    a.nombre AS atributo
-                FROM carta c
-                JOIN atributo a ON c.atributo_id = a.id";
-
-        $stmt = $pdo->query($sql);
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $pdo = $this->database->closeConnection();
-        return $result;
-    }
 
     public function mostrarCartas(array|int $cartas): array
     {

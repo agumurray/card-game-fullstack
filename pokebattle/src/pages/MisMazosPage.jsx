@@ -37,7 +37,11 @@ const MisMazosPage = () => {
         setLoading(false);
       })
       .catch((err) => {
-        setError(err.response?.data?.error || "Error al cargar los mazos");
+        setError(
+          err.response?.data?.error ||
+            err.response.data.message ||
+            "Error al cargar los mazos"
+        );
         setLoading(false);
       });
   }, [usuario]);

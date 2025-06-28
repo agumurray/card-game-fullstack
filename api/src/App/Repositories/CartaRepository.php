@@ -28,12 +28,11 @@ class CartaRepository
         return true;
     }
 
-    // Firma de método desde rama "main", conservando ambos cambios
+
     public function mostrarCartas(array|int $cartas): array
     {
         $pdo = $this->database->getConnection();
 
-        // Si te pasaron un solo ID como entero
         if (is_int($cartas)) {
             $id_cartas = [$cartas];
         } else {

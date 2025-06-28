@@ -8,6 +8,10 @@ const StatPage = () => {
   const [sortOrder, setSortOrder] = useState("desc"); // 'desc' = mejor primero
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
+  const bestPlayerId =
+  sortOrder === "desc"
+    ? sorted[0]?.id_usuario
+    : sorted[sorted.length - 1]?.id_usuario;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,7 +50,7 @@ const StatPage = () => {
   );
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-5">
       <h2 className="mb-4">📊 Listado de Estadísticas</h2>
 
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -63,14 +67,14 @@ const StatPage = () => {
       </div>
 
       <div className="list-group">
-        {pagedData.map((user) => (
+        {pagedData.map((user,index) => (
           <div
             key={user.id_usuario}
-            className={`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${
-              user.id_usuario === sorted[0]?.id_usuario && sortOrder === "desc"
-                ? "top-performer"
-                : ""
-            }`}
+            className={`mi-list-itema ${
+              user.id_usuario === bestPlayerId
+              ?"top-player"
+              :"mid-player"
+            }`} 
           >
             <div>
               <h5 className="mb-1">{user.nombre}</h5>
@@ -79,7 +83,8 @@ const StatPage = () => {
                 {user.perdio} | Empates: {user.empato}
               </small>
             </div>
-            <span className="badge bg-primary rounded-pill">
+            <span className={user.id_usuario === bestPlayerId ? "badge bg-warning rounded-pill":"badge bg-primary rounded-pill"}
+            >
               {(user.promedio * 100).toFixed(1)}%
             </span>
           </div>

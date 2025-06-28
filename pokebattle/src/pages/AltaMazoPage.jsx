@@ -105,7 +105,10 @@ const AltaMazoPage = () => {
         setError(data.message || "Error al crear el mazo.");
       }
     } catch (err) {
-      setError("Ocurrió un error al conectar con el servidor.");
+      setError(
+        err.response?.data?.message ||
+          "Ocurrió un error al conectar con el servidor."
+      );
     }
   };
 

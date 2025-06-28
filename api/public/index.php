@@ -8,11 +8,9 @@ use App\Controllers\AuthController;
 use App\Controllers\JuegoController;
 use App\Controllers\UsuarioController;
 use App\Controllers\MazoController;
-
 use App\Middleware\AuthMiddleware;
 use App\Middleware\ClaveMiddleware;
 use App\Middleware\CorsMiddleware;
-
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
 use Psr\Http\Message\ResponseInterface;
@@ -62,9 +60,6 @@ $app->get('/usuarios/{usuario}', [UsuarioController::class, 'obtener'])
     ->add(AuthMiddleware::class);
 
 $app->post('/mazos', [MazoController::class, 'agregar'])
-    ->add(AuthMiddleware::class);
-
-$app->get('/allcards', [MazoController::class, 'ver'])
     ->add(AuthMiddleware::class);
 
 $app->get('/usuarios/{usuario}/mazos', [MazoController::class, 'mostrarMazos'])

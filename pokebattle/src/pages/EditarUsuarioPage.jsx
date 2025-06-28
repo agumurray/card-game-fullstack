@@ -40,7 +40,7 @@ const EditarUsuarioPage = () => {
         tipo: "error",
         texto:
           err.response?.data?.error ||
-          err.message ||
+          err.response?.data?.message ||
           "Error al editar los datos",
       });
     } finally {
@@ -119,14 +119,8 @@ const EditarUsuarioPage = () => {
           <div
             className={`alert mt-3 alert-${
               mensaje.tipo === "success" ? "success" : "danger"
-            } alert-dismissible`}
+            }`}
           >
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="alert"
-              aria-label="Close"
-            ></button>
             {mensaje.texto}
           </div>
         )}

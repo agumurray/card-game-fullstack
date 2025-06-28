@@ -170,7 +170,7 @@ const JugarPage = () => {
 
         <Row className="justify-content-center mb-4">
           <Col xs="auto">
-            <Image src={fon} alt="Tablero" id="aaa" />
+            <Image src={fon} alt="Tablero" id="tablero" />
           </Col>
         </Row>
 

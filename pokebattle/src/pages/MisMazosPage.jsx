@@ -9,6 +9,7 @@ import { useAuth } from "../contexts/useAuth";
 import { Button, Modal, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import CartaComponent from "../components/CartaComponent";
+import "@/styles/MisMazosPage.css"; // ✅ Importación del archivo de estilos
 
 const MisMazosPage = () => {
   const { usuario } = useAuth();
@@ -124,8 +125,8 @@ const MisMazosPage = () => {
   }
 
   return (
-    <div className="container mt-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
+    <div className="container mis-mazos-container">
+      <div className="mis-mazos-header">
         <h2>Mis Mazos</h2>
         {puedeCrear ? (
           <Link to="/alta-mazo">
@@ -141,14 +142,7 @@ const MisMazosPage = () => {
       <div className="row">
         {mazos.map((mazo) => (
           <div key={mazo.id} className="col-md-4 mb-4">
-            <div
-              className="border p-3 h-100 rounded text-center"
-              style={{
-                backgroundColor: "rgb(33, 37, 41)",
-                color: "white",
-                boxShadow: "0 4px 8px rgba(119, 0, 0, 0.7)",
-              }}
-            >
+            <div className="mazo-card">
               {editandoId === mazo.id ? (
                 <>
                   <Form.Control
@@ -236,8 +230,8 @@ const MisMazosPage = () => {
         <Modal.Header closeButton>
           <Modal.Title>{mazoActivo?.nombre}</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ maxHeight: "70vh", overflowY: "auto" }}>
-          <div className="d-flex flex-wrap justify-content-center gap-3">
+        <Modal.Body className="modal-cartas">
+          <div className="modal-cartas-contenido">
             {mazoActivo?.cartas.map((carta) => (
               <CartaComponent
                 nombre={carta.nombre}

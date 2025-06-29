@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import loadingGif from "../assets/pokebola.gif";
 import { getMousePosition } from "../utils/mouseTracker";
+import "@/styles/LoadingSpinner.css"; // nuevo import
 
 const LoadingSpinner = ({ active }) => {
   const [pos, setPos] = useState({ x: 0, y: 0 });
@@ -27,19 +28,13 @@ const LoadingSpinner = ({ active }) => {
     <img
       src={loadingGif}
       alt="Cargando..."
+      className="loading-spinner"
       style={{
-        position: "fixed",
         top: pos.y,
         left: pos.x,
-        pointerEvents: "none",
-        width: 40,
-        height: 40,
-        zIndex: 9999,
-        userSelect: "none",
       }}
     />
   );
 };
 
 export default LoadingSpinner;
-

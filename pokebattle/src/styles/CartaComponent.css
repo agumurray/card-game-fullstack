@@ -1,0 +1,14 @@
+.carta-component {
+  width: 13rem;
+  height: 270px;
+  border: 2px solid #444;
+}
+
+.carta-imagen {
+  height: 150px;
+  object-fit: contain;
+  padding: 10px;
+  display: block;
+  margin-inline: auto;
+  width: 100%;
+}

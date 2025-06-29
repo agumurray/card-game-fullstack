@@ -101,8 +101,10 @@ class MazoController
         foreach ($cartas as &$carta) {
             $carta['atributo_nombre'] = $nombres_atributo[$carta['atributo_id']] ?? 'Desconocido';
         }
-        return $this->withJson($response, ['status' => 'success',
-                'cartas' => $cartas]);
+        return $this->withJson($response, [
+            'status' => 'success',
+            'cartas' => $cartas
+        ]);
     }
 
     public function eliminarMazo(Request $request, Response $response, array $args): Response
@@ -129,15 +131,27 @@ class MazoController
         $id_usuario = (int) $args['usuario'];
         $mazos = $this->repo_mazo->buscarMazosPorId($id_usuario) ?? [];
 
-        foreach ($mazos as $key => $value) {
-            $datocarta = $this->repo_mazo_carta->buscarIdCartas($mazos[$key]['id']);
-            $mazos[$key]['cartas'] = $this->repo_cartas->mostrarCartas($datocarta);
+        foreach ($mazos as $key => $mazo) {
+            $datocarta = $this->repo_mazo_carta->buscarIdCartas($mazo['id']);
+            $cartas = $this->repo_cartas->mostrarCartas($datocarta);
+
+            $atributo_ids = array_column($cartas, 'atributo_id');
+            $atributos = $this->repo_atributo->atributosID(array_unique($atributo_ids));
+
+            foreach ($cartas as &$carta) {
+                $id = $carta['atributo_id'];
+                $carta['atributo_nombre'] = $atributos[$id] ?? 'Desconocido';
+            }
+
+            $mazos[$key]['cartas'] = $cartas;
         }
+
         return $this->withJson($response, [
             'status' => 'success',
             'Listado de mazos' => $mazos
         ]);
     }
+
 
     private function withJson(Response $response, array $data, int $status = 200): Response
     {

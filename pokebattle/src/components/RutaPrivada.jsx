@@ -5,7 +5,7 @@ const RutaPrivada = ({ children }) => {
   const { usuario, cargando } = useAuth();
 
   if (cargando) {
-    return <p>Cargando sesión...</p>; //aca podria ir una ruedita de carga 
+    return <p>Cargando sesión...</p>; 
   }
 
   if (!usuario) {

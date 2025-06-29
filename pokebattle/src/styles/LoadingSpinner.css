@@ -1,0 +1,8 @@
+.loading-spinner {
+  position: fixed;
+  pointer-events: none;
+  width: 40px;
+  height: 40px;
+  z-index: 9999;
+  user-select: none;
+}

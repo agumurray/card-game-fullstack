@@ -1,24 +1,31 @@
 import { Card } from "react-bootstrap";
+import "@/styles/CartaComponent.css"; // nuevo import
 
 const imagenes = import.meta.glob("@/assets/pokemons/*.svg", {
   eager: true,
   import: "default",
 });
 
-const CartaComponent = ({ nombre, atributo, ataque, punto,customStyle={} }) => {
+const CartaComponent = ({
+  nombre,
+  atributo,
+  ataque,
+  punto,
+  customStyle = {},
+}) => {
   const ruta = `/src/assets/pokemons/${nombre.toLowerCase()}.svg`;
   const imagen = imagenes[ruta];
 
   return (
     <Card
-      style={{ width: "13rem", height: "270px", border: "2px solid #444" ,...customStyle}}
-      className="text-center shadow"
+      style={{ ...customStyle }}
+      className="carta-component text-center shadow"
     >
       <Card.Img
         variant="top"
         src={imagen}
         alt={`Imagen de ${nombre}`}
-        style={{ height: "150px", objectFit: "contain", padding: "10px",display:"block",marginInline:"auto",width:"100%"}}
+        className="carta-imagen"
       />
       <Card.Body>
         <Card.Title>

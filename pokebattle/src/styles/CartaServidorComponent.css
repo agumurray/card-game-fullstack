@@ -1,0 +1,8 @@
+.carta-servidor {
+  width: 12rem;
+  height: 270px;
+  border: 2px solid #444;
+  background-color: #333;
+  color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

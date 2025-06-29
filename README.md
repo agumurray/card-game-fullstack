@@ -1,3 +1,8 @@
+> ⚠️ **Advertencia**
+>
+> - Si bien este proyecto está subido a un repositorio de IDEAS, se recomienda visitar el repositorio público en GitHub: [https://github.com/usuario/repositorio-publico](https://github.com/agumurray/card-game-fullstack.git
+> - Se realizaron algunos cambios en la API respecto de la entrega anterior. Los mismos están detallados en el README del directorio [`api`](./api/README.md). Podés verlos haciendo clic [AQUÍ](api/README.md).
+
 # Juego de cartas - API + Frontend
 
 Un proyecto completo de un juego de cartas en línea, que incluye una API RESTful construida con PHP (Slim Framework) y un frontend interactivo desarrollado en React.

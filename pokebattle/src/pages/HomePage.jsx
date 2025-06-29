@@ -1,6 +1,6 @@
 import "../styles/HomePage.css";
 
-const pokemons = Array.from({ length: 40 }, (_, i) => i + 1); 
+const pokemons = Array.from({ length: 40 }, (_, i) => i + 1);
 
 const HomePage = () => {
   return (

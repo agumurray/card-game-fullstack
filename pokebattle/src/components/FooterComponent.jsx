@@ -4,8 +4,8 @@ const FooterComponent = () => {
   return (
     <footer className="footer">
       <p>
-        &copy; {new Date().getFullYear()} Pokebattle – Facultad de Informática,
-        UNLP.
+        &copy; {new Date().getFullYear()} Pokebattle – Murray Agustin, Ibañez
+        Kevin, Poggio Santiago 
       </p>
     </footer>
   );

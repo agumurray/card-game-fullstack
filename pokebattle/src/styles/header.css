@@ -1,8 +1,12 @@
 .header {
   background-color: #cc0000;
   padding: 1rem;
-  color: #F8F8F8;
-  text-align: center;
+  color: #f8f8f8;
+
+  display: flex;
+  justify-content: center; /* el h1 va al centro */
+  align-items: center;
+  position: relative; /* para posicionar los logos */
 }
 
 .header-link {
@@ -11,4 +15,24 @@
 }
 .header-link:hover {
   opacity: 0.8;
+}
+
+.header-title {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.header-logo {
+  height: 60px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.header-logo.left {
+  left: 1rem;
+}
+
+.header-logo.right {
+  right: 1rem;
 }
